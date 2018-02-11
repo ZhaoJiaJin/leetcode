@@ -804,12 +804,186 @@ func canJump(nums []int) bool {
 	return left == 0
 }
 
+
+/**
+ * Definition for an interval.
+ * type Interval struct {
+ *	   Start int
+ *	   End   int
+ * }
+ */
+
+
+type Interval struct {
+	   Start int
+	   End   int
+}
+
+func sortInterval(a []Interval){
+	for i:=0; i<len(a);i++{
+		for j:=i+1; j<len(a);j ++{
+			if a[i].Start > a[j].Start{
+				a[i],a[j] = a[j],a[i]
+			}
+		}
+	}
+}
+
+func merge(intervals []Interval) []Interval {
+	if len(intervals) <= 1{
+		return intervals
+	}
+	sortInterval(intervals)
+	ans := make([]Interval,0)
+	left := intervals[0].Start
+	right := intervals[0].End
+	var i int
+	for i = 1; i < len(intervals); i++{
+		//if intervals[i].Start <= intervals[i-1].End{
+		if intervals[i].Start <= right{
+			right = max(right,intervals[i-1].End)
+			right = max(intervals[i].End,right)
+			
+			continue
+		}else{
+			tmp := Interval{left,right}
+			ans = append(ans,tmp)
+			left = intervals[i].Start
+			right = max(right,intervals[i].End)
+		}
+	}
+	tmp := Interval{left,right}
+	ans = append(ans,tmp)
+	return ans
+}
+
+func insert(intervals []Interval, newInterval Interval) []Interval {
+	intervals = append(intervals,newInterval)    
+	return merge(intervals)
+}
+
+func generateMatrix(n int) [][]int {
+	dir := make([][]int,4)
+	dir[0] = []int{0,1}
+	dir[1] = []int{1,0}
+	dir[2] = []int{0,-1}
+	dir[3] = []int{-1,0}
+	if n < 1{
+		return [][]int{}
+	}
+	visited := make([][]int,n)
+	for i:=0; i < len(visited); i++{
+		visited[i] = make([]int,n)
+	}
+	d := 0
+	i,j := 0,-1
+	cnt := 1
+	for cnt <= n * n{
+		//try to add
+		newi,newj := i + dir[d][0],j + dir[d][1]
+		if newi < 0 || newi >= n || newj < 0 || newj >= n || visited[newi][newj] != 0 {
+			//fail
+			d = (d+1) % 4
+			continue
+		}
+		//success
+		i,j = newi,newj
+		visited[i][j] = cnt
+		cnt ++
+	}
+	return visited
+    
+}
+
+func getjie(n int)int{
+	ans := 1
+	for i:=1 ; i<=n; i++{
+		ans *= i
+	}
+	return ans
+}
+
+
+func getp(nums []string,n int,k int) string{
+	fmt.Println(nums)
+	ans := ""
+	if len(nums) == 1{
+		return nums[0]
+	}
+	jie := getjie(n-1)
+	index := k / jie
+	index_v := nums[index]
+	nums = append(nums[:index],nums[index+1:]...)
+	ans = index_v + getp(nums,n-1, k-index * jie)
+	return ans
+
+
+}
+
+
+func getPermutation(n int, k int) string {
+	nums := make([]string,n)
+	for i:=1; i<=n ; i++{
+		nums[i-1] = string('0' + i)
+	}
+
+	return getp(nums,n,k-1)
+}
+
+
+
+type ListNode struct {
+    Val int
+    Next *ListNode
+}
+
+func rotateRight(head *ListNode, k int) *ListNode {
+	if head == nil || head.Next == nil || k == 0{
+		return head
+	}
+	length := 1
+	//get length
+	l := head
+	for l.Next != nil{
+		l = l.Next
+		length ++
+	}
+
+	k = k % length
+	if head == nil || head.Next == nil || k == 0{
+		return head
+	}
+	fast := head
+	slow := head
+	for i:=0; i<k ;i ++{
+		if fast == nil || fast.Next == nil{
+			return head
+		}
+		fast = fast.Next
+	}
+	for fast.Next != nil{
+		fast,slow = fast.Next,slow.Next
+	}
+	tmphead := slow.Next
+	fast.Next = head
+	slow.Next = nil
+	return tmphead
+
+	
+}
+
 func main() {
 	//a := []int{0,1,0,2,1,0,1,3,2,1,2,1}
 	//fmt.Println(combinationSum2([]int{10,1,2,7,6,1,5},8))
 	//fmt.Println(jump([]int{8,2,4,4,4,9,5,2,5,8,8,0,8,6,9,1,1,6,3,5,1,2,6,6,0,4,8,6,0,3,2,8,7,6,5,1,7,0,3,4,8,3,5,9,0,4,0,1,0,5,9,2,0,7,0,2,1,0,8,2,5,1,2,3,9,7,4,7,0,0,1,8,5,6,7,5,1,9,9,3,5,0,7,5}))
 	//fmt.Println(searchRange([]int{1},1))
-	fmt.Println(canJump([]int{3,2,1,0,4}))
+	//fmt.Println(canJump([]int{3,2,1,0,4}))
+	/*fmt.Println(merge([]Interval{
+		Interval{2,3},
+		Interval{5,6},
+		Interval{1,10},
+	}))*/
+	fmt.Println(rotateRight(&ListNode{},1))
 }
 
 
