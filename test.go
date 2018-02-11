@@ -972,6 +972,41 @@ func rotateRight(head *ListNode, k int) *ListNode {
 	
 }
 
+
+func up(grid [][]int,orow,ocol,m,n int)int{
+	if grid[orow][ocol] != 0{
+		return grid[orow][ocol]
+	}
+	row,col := orow,ocol
+	if row == m-1 && col == n-1{
+		fmt.Println("return 1")
+		return 1
+	}
+	//down
+	ans := 0
+	for row = row + 1; row < m; row ++{
+		ans += up(grid,row,ocol,m,n)
+		break
+	}
+	//right
+	for col = col + 1; col < n; col ++{
+		ans += up(grid,orow,col,m,n)
+		break
+	}
+	grid[orow][ocol] = ans
+	return ans
+	
+}
+
+
+func uniquePaths(m int, n int) int {
+	grid := make([][]int,m)
+	for i:=0; i<m; i++{
+		grid[i] = make([]int,n)
+	}
+	return up(grid,0,0,m,n)
+}
+
 func main() {
 	//a := []int{0,1,0,2,1,0,1,3,2,1,2,1}
 	//fmt.Println(combinationSum2([]int{10,1,2,7,6,1,5},8))
@@ -983,7 +1018,8 @@ func main() {
 		Interval{5,6},
 		Interval{1,10},
 	}))*/
-	fmt.Println(rotateRight(&ListNode{},1))
+	//fmt.Println(rotateRight(&ListNode{},1))
+	fmt.Println(uniquePaths(1,10))
 }
 
 
