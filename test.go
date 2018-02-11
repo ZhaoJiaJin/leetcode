@@ -755,13 +755,61 @@ func spiralOrder(matrix [][]int) []int {
 	return ans
 }
 
+/*func canJump(nums []int) bool {
+	if len(nums) <= 1{
+		return true
+	}
+	pos := make([]int,0)
+	pos = append(pos,0)
+	for len(pos) != 0{
+		fmt.Println(pos)
+		if pos[0] >= len(nums){
+			return false
+		}
+		new_pos := make([]int,0)
+		for i:=0; i<len(pos); i++{
+			if pos[i] >= len(nums){
+				continue
+			}
+			value := nums[pos[i]]
+			j := 1
+			for ; j <= value ; j++{
+				new_p := pos[i] + j
+				if new_p == len(nums) - 1{
+					return true
+				}
+				if len(new_pos) > 0 && new_p <= new_pos[len(new_pos)-1]{
+					j = new_pos[len(new_pos)-1]
+					continue
+				}
+				//if new_p > pos[len(pos)-1]{
+					new_pos = append(new_pos,new_p)
+				//}
+			}
+		}
+		pos = new_pos
+	}
+	return false
+	    
+}*/
+
+func canJump(nums []int) bool {
+	size := len(nums)-1
+	left := size - 1
+	for j := size-1; j >=0 ;j --{
+		if j+nums[j] >= left{
+			left = j
+		}
+	}
+	return left == 0
+}
 
 func main() {
 	//a := []int{0,1,0,2,1,0,1,3,2,1,2,1}
 	//fmt.Println(combinationSum2([]int{10,1,2,7,6,1,5},8))
 	//fmt.Println(jump([]int{8,2,4,4,4,9,5,2,5,8,8,0,8,6,9,1,1,6,3,5,1,2,6,6,0,4,8,6,0,3,2,8,7,6,5,1,7,0,3,4,8,3,5,9,0,4,0,1,0,5,9,2,0,7,0,2,1,0,8,2,5,1,2,3,9,7,4,7,0,0,1,8,5,6,7,5,1,9,9,3,5,0,7,5}))
 	//fmt.Println(searchRange([]int{1},1))
-	fmt.Println(solveNQueens(4))
+	fmt.Println(canJump([]int{3,2,1,0,4}))
 }
 
 
