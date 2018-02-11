@@ -633,13 +633,14 @@ func permuteUnique(nums []int) [][]int {
 
 func flip(matrix [][]int){
 	for i:=0; i<len(matrix)/2; i++{
-		matrix[i],matrix[len(matrix)-1-i] = matrix[len(matrix)-1-i],matrix[i]	
+		matrix[i],matrix[len(matrix)-1-i] = matrix[len(matrix)-1-i],matrix[i]
 	}
 }
 
 
 func rotate(matrix [][]int)  {
 	//flip first,then     
+    flip(matrix)
 	for i:=0; i<len(matrix); i++{
 		for j:=0; j<len(matrix[i]); j++{
 			if i>j{
@@ -649,17 +650,84 @@ func rotate(matrix [][]int)  {
 	}
 }
 
+func validQ(mt [][]bool,row,col int)bool{
+    //row
+    for i:=0; i<col; i++{
+        if mt[row][i]{
+            return false
+        }
+    }
+    //line
+    for i:=0; i<row; i++{
+        if mt[i][col]{
+            return false
+        }
+    }
+    //xie
+    for i,j := row-1,col-1; i >= 0 && j >= 0; i,j = i-1,j-1{
+        if mt[i][j]{
+            return false
+        }
+    }
+
+    for i,j := row-1,col+1; i >=0 && j<len(mt); i,j = i-1,j+1{
+        if mt[i][j]{
+            return false
+        }
+    }
+    return true
+}
+
+func solveNq(ans *[][]string,mt [][]bool,row int){
+    if row == len(mt){
+        //valid ans, add to ans later
+        tmpans := make([]string,0)
+        for i:=0; i<len(mt); i++{
+            ans_str := ""
+            for j:=0; j<len(mt[i]); j++{
+                if mt[i][j]{
+                    ans_str += "Q"
+                }else{
+                    ans_str += "."
+                }
+            }
+            tmpans = append(tmpans,ans_str)
+        }
+        fmt.Println(tmpans)
+        *ans = append(*ans,tmpans)
+        return
+    }
+    for i:=0 ; i<len(mt[row]); i++{
+        mt[row][i] = true
+        if validQ(mt,row,i){
+            solveNq(ans,mt,row+1)
+        }
+        mt[row][i] = false
+    }
+}
+
+func solveNQueens(n int) [][]string {
+    solu := make([][]string,0)
+    mt := make([][]bool,n)
+    for i:=0 ; i<n ; i ++{
+        mt[i] = make([]bool,n)
+    }
+    solveNq(&solu,mt,0)
+    return solu
+}
+
+func totalNQueens(n int) int {
+    return len(solveNQueens(n))
+}
+
+
 
 func main() {
 	//a := []int{0,1,0,2,1,0,1,3,2,1,2,1}
 	//fmt.Println(combinationSum2([]int{10,1,2,7,6,1,5},8))
 	//fmt.Println(jump([]int{8,2,4,4,4,9,5,2,5,8,8,0,8,6,9,1,1,6,3,5,1,2,6,6,0,4,8,6,0,3,2,8,7,6,5,1,7,0,3,4,8,3,5,9,0,4,0,1,0,5,9,2,0,7,0,2,1,0,8,2,5,1,2,3,9,7,4,7,0,0,1,8,5,6,7,5,1,9,9,3,5,0,7,5}))
-	a := make([][]int,2)
-	a[0] = []int{1,2}
-	a[1] = []int{3,4}
-	rotate(a)
-	fmt.Println(a)
 	//fmt.Println(searchRange([]int{1},1))
+	fmt.Println(solveNQueens(4))
 }
 
 
