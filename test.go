@@ -1007,6 +1007,49 @@ func uniquePaths(m int, n int) int {
 	return up(grid,0,0,m,n)
 }
 
+func up2(obstacleGrid [][]int,grid [][]int,orow,ocol,m,n int){
+	if obstacleGrid[orow][ocol] == 1{
+		grid[orow][ocol] = 0
+		return 
+	}
+	if grid[orow][ocol] != 0{
+		return 
+	}
+	row,col := orow,ocol
+	if row == m-1 && col == n-1{
+		grid[orow][ocol] = 1
+		return 
+	}
+	//down
+	ans := 0
+	for row = row + 1; row < m; row ++{
+		ans += up2(obstacleGrid,grid,row,ocol,m,n)
+		break
+	}
+	//right
+	for col = col + 1; col < n; col ++{
+		ans += up2(obstacleGrid,grid,orow,col,m,n)
+		break
+	}
+	grid[orow][ocol] = ans
+	return 
+	
+}
+
+func uniquePathsWithObstacles(obstacleGrid [][]int) int {
+	if len(obstacleGrid) == 0{
+		return 0
+	}
+	m,n := len(obstacleGrid),len(obstacleGrid[0])
+	grid := make([][]int,m)
+	for i:=0; i<m; i++{
+		grid[i] = make([]int,n)
+	}
+	up2(obstacleGrid,grid,0,0,m,n)
+	return grid[m-1][n-1]
+}
+
+
 func main() {
 	//a := []int{0,1,0,2,1,0,1,3,2,1,2,1}
 	//fmt.Println(combinationSum2([]int{10,1,2,7,6,1,5},8))
