@@ -721,6 +721,40 @@ func totalNQueens(n int) int {
 }
 
 
+func spiralOrder(matrix [][]int) []int {
+	dir := make([][]int,4)
+	dir[0] = []int{0,1}
+	dir[1] = []int{1,0}
+	dir[2] = []int{0,-1}
+	dir[3] = []int{-1,0}
+	if len(matrix) < 1{
+		return []int{}
+	}
+	ans := make([]int,0,len(matrix) * len(matrix[0]))    
+	visited := make([][]bool,len(matrix))
+	for i:=0; i < len(visited); i++{
+		visited[i] = make([]bool,len(matrix[i]))
+	}
+	d := 0
+	for i,j := 0,-1;;{
+		//try to add
+		newi,newj := i + dir[d][0],j + dir[d][1]
+		if newi < 0 || newi >= len(matrix) || newj < 0 || newj >= len(matrix[newi]) || visited[newi][newj] {
+			//fail
+			d = (d+1) % 4
+			continue
+		}
+		//success
+		i,j = newi,newj
+		visited[i][j] = true
+		ans = append(ans,matrix[i][j])
+		if len(ans) == len(matrix) * len(matrix[0]){
+			break
+		}
+	}
+	return ans
+}
+
 
 func main() {
 	//a := []int{0,1,0,2,1,0,1,3,2,1,2,1}
