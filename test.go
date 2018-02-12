@@ -1171,8 +1171,150 @@ func simplifyPath(path string) string {
 }
 
 
+func minDistance(word1 string, word2 string) int {
+	m := len(word1)
+	n := len(word2)
+	if m == 0{
+		return n
+	}
+	if n == 0{
+		return m
+	}
+
+	grid := make([][]int,m+1)
+	for i:=0; i<=m; i++{
+		grid[i] = make([]int,n+1)
+	}
+
+	for i:=0; i<=m; i++{
+		for j:=0 ; j <= n; j++{
+			if j == 0{
+				grid[i][j] = i
+			}else if i == 0{
+				grid[i][j] = j
+			}else{
+				if word1[i-1] == word2[j-1]{
+					grid[i][j] = grid[i-1][j-1]
+				}else{
+					minv := min(grid[i-1][j-1],grid[i-1][j])
+					minv = min(minv,grid[i][j-1])
+					grid[i][j] = minv + 1
+				}
+			}
+		}
+	}
+
+	return grid[m][n]
+}
+
+
+func setZeroes(matrix [][]int)  {
+	m,n := len(matrix),len(matrix[0])    
+	col0 := false
+	row0 := false
+
+	for j:=0 ; j < n; j++{
+		if matrix[0][j] == 0{
+			row0 = true
+			break
+		}
+	}
+	for i:=0; i<m; i++{
+		if matrix[i][0] == 0{
+			col0 =true
+			break
+		}
+	}
+	for i:=1; i<m; i++{
+		for j:=1 ; j < n; j++{
+			if matrix[i][j] == 0{
+				matrix[i][0] = 0
+				matrix[0][j] = 0
+			}
+		}
+	}
+	for j:=0 ; j < n; j++{
+		if matrix[0][j] == 0{
+			for i:=0; i<m; i++{
+				matrix[i][j] = 0
+			}
+		}
+	}
+	for i:=0; i<m; i++{
+		if matrix[i][0] == 0{
+			for j:=0 ; j < n; j++{
+				matrix[i][j] = 0
+			}
+		}
+	}
+	if col0{
+		for i:=0; i<m; i++{
+			matrix[i][0] = 0
+		}
+	}
+	if row0{
+		for j:=0 ; j < n; j++{
+			matrix[0][j] = 0
+		}
+	}
+
+
+}
+
+
+func searchMatrix(matrix [][]int, target int) bool {
+	//search for row    
+	m := len(matrix)
+	if m == 0 || len(matrix[0]) == 0{
+		return false
+	}
+	i := 0
+	for ; i < m ; i++{
+		if matrix[i][0] == target{
+			return true
+		}else if matrix[i][0] > target{
+			break
+		}
+	}
+	if i - 1 >= m || i-1 < 0{
+		return false
+	}
+	//search in row,binary search
+	target_row := matrix[i-1]
+	begin, end := 0,len(target_row)
+	for begin < end{
+		mid := (begin + end)/2
+		if target_row[mid] == target{
+			return true
+		}else if target_row[mid] > target{
+			end = mid
+		}else{
+			begin = mid+1
+		}
+	}
+	return false
+}
+
+
+func pow(x,y int)int{
+	ans:=1
+	for i:=0; i<y;i++{
+		ans *= x
+	}
+	return ans
+}
+
+func titleToNumber(s string) int {
+	ans := 0
+	for i:= len(s)-1; i>=0 ; i--{
+		ans += int(s[i]-'A'+1)*pow(26,len(s)-i-1)
+	}
+	return ans
+}
+
+
 func main() {
-	//a := []int{0,1,0,2,1,0,1,3,2,1,2,1}
+	fmt.Println(titleToNumber("AB"))
 	//fmt.Println(combinationSum2([]int{10,1,2,7,6,1,5},8))
 	//fmt.Println(jump([]int{8,2,4,4,4,9,5,2,5,8,8,0,8,6,9,1,1,6,3,5,1,2,6,6,0,4,8,6,0,3,2,8,7,6,5,1,7,0,3,4,8,3,5,9,0,4,0,1,0,5,9,2,0,7,0,2,1,0,8,2,5,1,2,3,9,7,4,7,0,0,1,8,5,6,7,5,1,9,9,3,5,0,7,5}))
 	//fmt.Println(searchRange([]int{1},1))
@@ -1185,6 +1327,7 @@ func main() {
 	//fmt.Println(rotateRight(&ListNode{},1))
 	//fmt.Println(fullJustify([]string{"What","must","be","shall","be."},12))
 	//fmt.Println(uniquePathsWithObstacles([][]int{[]int{0,0},[]int{1,0}}))
+	//fmt.Println(minDistance("a","b"))
 }
 
 
