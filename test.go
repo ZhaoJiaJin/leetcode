@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"errors"
 	"strconv"
+	"strings"
 )
 
 func findSubstring(s string, words []string) []int {
@@ -1037,6 +1038,97 @@ func uniquePathsWithObstacles(obstacleGrid [][]int) int {
 	return grid[m-1][n-1]
 }
 
+func minPathSum(grid [][]int) int {
+	if len(grid) == 0{
+		return 0
+	}
+	m,n := len(grid),len(grid[0])
+	sumgrid := make([][]int,m)
+	for i:=0; i<m; i++{
+		sumgrid[i] = make([]int,n)
+	}
+
+	for i:=0; i<m; i++{
+		for j:=0; j<n; j++{
+			if i == 0 && j == 0{
+				sumgrid[i][j] = grid[i][j]
+			}else if i == 0 && j > 0{
+				sumgrid[i][j] = sumgrid[i][j-1] + grid[i][j]
+			}else if i > 0 && j == 0{
+				sumgrid[i][j] = sumgrid[i-1][j] + grid[i][j]
+			}else{
+				sumgrid[i][j] = min(sumgrid[i-1][j],sumgrid[i][j-1]) + grid[i][j]
+			}
+
+		}
+	}
+	return sumgrid[m-1][n-1]
+}
+
+func jlen(a []string,sp string)int{
+	s := strings.Join(a,sp)
+	return len(s)
+}
+
+func emptys(n int)string{
+	s := ""
+	for i:=0 ; i < n ; i++{
+		s += " "
+	}
+	return s
+}
+
+func fullJustify(words []string, maxWidth int) []string {
+	if len(words) <= 0 || maxWidth == 0{
+		return words
+	}
+	ans := [][]string{[]string{}}
+	row := 0
+	for i := 0; i < len(words);{
+		ll := 0
+		if len(ans[row]) == 0{
+			ll = len(words[i])
+		}else{
+			ll = jlen(ans[row]," ") + len(words[i]) + 1
+		}
+		if ll > maxWidth{
+			row ++
+			ans = append(ans,make([]string,0))
+		}else{
+			ans[row] = append(ans[row],words[i])
+			i++
+		}
+	}
+	//ans[row] = append(ans[row],"")
+	str_ans := make([]string,len(ans))
+	for i:=0 ; i < len(ans) ; i++{
+		s := ""
+		if i == len(ans) - 1{//last one
+			s = strings.Join(ans[i]," ")
+			s += emptys(maxWidth - len(s))
+		}else if len(ans[i]) == 1{
+			s += (ans[i][0] + emptys(maxWidth  - len(ans[i][0])))
+		}else{
+			base := (maxWidth - jlen(ans[i],"")) / (len(ans[i]) - 1)
+			extra := (maxWidth - jlen(ans[i],"")) % (len(ans[i]) - 1)
+			for j := 0; j < len(ans[i]); j++{
+				s += ans[i][j] 
+				if j == len(ans[i]) - 1{
+					continue
+				}
+				s += emptys(base)
+				if extra > 0{
+					s += " "	
+					extra --
+				}
+			}
+		}
+		str_ans[i] = s
+
+	}
+	return str_ans
+}
+
 
 func main() {
 	//a := []int{0,1,0,2,1,0,1,3,2,1,2,1}
@@ -1050,12 +1142,14 @@ func main() {
 		Interval{1,10},
 	}))*/
 	//fmt.Println(rotateRight(&ListNode{},1))
-	fmt.Println(uniquePathsWithObstacles([][]int{[]int{0,0},[]int{1,0}}))
+	fmt.Println(fullJustify([]string{"What","must","be","shall","be."},12))
+	//fmt.Println(uniquePathsWithObstacles([][]int{[]int{0,0},[]int{1,0}}))
 }
 
 
 /*
-
+["What","must","be","shall","be."]
+12
 [10,1,2,7,6,1,5]
 8
 [5,7,7,8,8,10]
