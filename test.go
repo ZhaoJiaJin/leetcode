@@ -1007,35 +1007,6 @@ func uniquePaths(m int, n int) int {
 	return up(grid,0,0,m,n)
 }
 
-func up2(obstacleGrid [][]int,grid [][]int,orow,ocol,m,n int){
-	if obstacleGrid[orow][ocol] == 1{
-		grid[orow][ocol] = 0
-		return 
-	}
-	if grid[orow][ocol] != 0{
-		return 
-	}
-	row,col := orow,ocol
-	if row == m-1 && col == n-1{
-		grid[orow][ocol] = 1
-		return 
-	}
-	//down
-	ans := 0
-	for row = row + 1; row < m; row ++{
-		ans += up2(obstacleGrid,grid,row,ocol,m,n)
-		break
-	}
-	//right
-	for col = col + 1; col < n; col ++{
-		ans += up2(obstacleGrid,grid,orow,col,m,n)
-		break
-	}
-	grid[orow][ocol] = ans
-	return 
-	
-}
-
 func uniquePathsWithObstacles(obstacleGrid [][]int) int {
 	if len(obstacleGrid) == 0{
 		return 0
@@ -1045,7 +1016,24 @@ func uniquePathsWithObstacles(obstacleGrid [][]int) int {
 	for i:=0; i<m; i++{
 		grid[i] = make([]int,n)
 	}
-	up2(obstacleGrid,grid,0,0,m,n)
+
+	for i:=0; i<m; i++{
+		for j:=0; j<n; j++{
+			if obstacleGrid[i][j] == 1{
+				grid[i][j] = 0
+			}else if i == 0 && j == 0{
+				grid[i][j] = 1
+			}else if i == 0 && j > 0{
+				grid[i][j] = grid[i][j-1]
+			}else if i > 0 && j == 0{
+				grid[i][j] = grid[i-1][j]
+			}else{
+				grid[i][j] = grid[i-1][j] + grid[i][j-1]
+			}
+
+		}
+	}
+	fmt.Println(grid)
 	return grid[m-1][n-1]
 }
 
@@ -1062,7 +1050,7 @@ func main() {
 		Interval{1,10},
 	}))*/
 	//fmt.Println(rotateRight(&ListNode{},1))
-	fmt.Println(uniquePaths(1,10))
+	fmt.Println(uniquePathsWithObstacles([][]int{[]int{0,0},[]int{1,0}}))
 }
 
 
