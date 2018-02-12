@@ -1129,6 +1129,47 @@ func fullJustify(words []string, maxWidth int) []string {
 	return str_ans
 }
 
+type MyS struct{
+	l []string
+	length int
+}
+
+func (s *MyS)pop()(string,error){
+	if s.length == 0{
+		return "",errors.New("empty")
+	}
+	last := s.l[s.length-1]
+	s.l = s.l[:s.length-1]
+	s.length --
+	return last,nil
+}
+
+func (s *MyS)push(v string){
+	s.l = append(s.l,v)
+	s.length ++
+}
+
+func (s *MyS)empty()bool{
+	return s.length == 0
+}
+
+
+func simplifyPath(path string) string {
+	spath := strings.Split(path,"/")    
+	s := MyS{}
+	for i:=0; i < len(spath); i++{
+		vl := spath[i]
+		if vl == ".."{
+			s.pop()
+		}else if vl == "." || vl == ""{
+		
+		}else{
+			s.push(vl)
+		}
+	}
+	return "/" + strings.Join(s.l,"/")
+}
+
 
 func main() {
 	//a := []int{0,1,0,2,1,0,1,3,2,1,2,1}
@@ -1142,7 +1183,7 @@ func main() {
 		Interval{1,10},
 	}))*/
 	//fmt.Println(rotateRight(&ListNode{},1))
-	fmt.Println(fullJustify([]string{"What","must","be","shall","be."},12))
+	//fmt.Println(fullJustify([]string{"What","must","be","shall","be."},12))
 	//fmt.Println(uniquePathsWithObstacles([][]int{[]int{0,0},[]int{1,0}}))
 }
 
