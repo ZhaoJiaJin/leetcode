@@ -1323,6 +1323,19 @@ func nextGreatestLetter(letters []byte, target byte) byte {
 	return letters[0]
 }
 
+
+func minCostClimbingStairs(cost []int) int {
+	l := len(cost)
+	dp := make([]int,l)
+	dp[l-1] = 0
+	dp[l-2] = cost[l-2]
+	for i := l-3; i >=0 ;i--{
+		dp[i] = cost[i] + min(dp[i+1],dp[i+2])
+	}
+	return dp[0]
+}
+
+
 func main() {
 	fmt.Println(titleToNumber("AB"))
 	//fmt.Println(combinationSum2([]int{10,1,2,7,6,1,5},8))
