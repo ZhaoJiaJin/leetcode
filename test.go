@@ -1313,6 +1313,16 @@ func titleToNumber(s string) int {
 }
 
 
+func nextGreatestLetter(letters []byte, target byte) byte {
+	i:=0
+	for ; i< len(letters); i++{
+		if letters[i] > target{
+			return letters[i]
+		}
+	}
+	return letters[0]
+}
+
 func main() {
 	fmt.Println(titleToNumber("AB"))
 	//fmt.Println(combinationSum2([]int{10,1,2,7,6,1,5},8))
