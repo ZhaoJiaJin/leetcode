@@ -1391,6 +1391,40 @@ func subsets(nums []int) [][]int {
     return ans
 }
 
+
+func check_board(board [][]byte,i,j int, word string,haslen int)bool{
+    if len(word) == haslen{
+        return true
+    }
+
+    if i<0 || j<0 || i >= len(board) || j >= len(board[i]){
+        return false
+    }
+    if board[i][j] != word[haslen]{
+        fmt.Println(board[i][j],word[0],board[i][j] != word[0])
+        return false
+    }
+    ori := board[i][j]
+    board[i][j] = ' '
+    valid := check_board(board,i-1,j,word,haslen+1) || check_board(board,i,j-1,word,haslen+1) || check_board(board,i,j+1,word,haslen+1) || check_board(board,i+1,j,word,haslen+1)
+    board[i][j] = ori
+    return valid
+}
+
+
+func exist(board [][]byte, word string) bool {
+    for i:=0; i < len(board); i++{
+        for j := 0; j < len(board[i]); j++{
+                if check_board(board,i,j,word,0){
+                    return true
+                }
+        }
+    }
+
+    return false
+}
+
+
 func main() {
 	fmt.Println(combine(4,2))
 	//fmt.Println(titleToNumber("AB"))
