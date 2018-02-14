@@ -1367,6 +1367,30 @@ func combine(n int, k int) [][]int {
 }
 
 
+func getsub(ans *[][]int,cand []int,tmp []int){
+    newtmp := make([]int,0)
+    newtmp = append(newtmp,tmp...)
+    fmt.Println(newtmp)
+    *ans = append(*ans,newtmp)
+
+    for i := 0; i < len(cand); i++{
+        tmp = append(tmp, cand[i])
+        newcand := make([]int,0)
+        //newcand = append(newcand, cand[:i]...)
+        newcand = append(newcand, cand[i+1:]...)
+        getsub(ans,newcand,tmp)
+        tmp = tmp[:len(tmp) - 1]
+    }
+}
+
+
+func subsets(nums []int) [][]int {
+    ans := make([][]int,0)
+    tmp := make([]int,0)
+    getsub(&ans,nums,tmp)
+    return ans
+}
+
 func main() {
 	fmt.Println(combine(4,2))
 	//fmt.Println(titleToNumber("AB"))
