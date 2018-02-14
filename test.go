@@ -1336,8 +1336,40 @@ func minCostClimbingStairs(cost []int) int {
 }
 
 
+func getcom(ans *[][]int,cand []int,tmp []int,k int){
+    if k == 0{
+        newtmp := make([]int,0)
+        newtmp = append(newtmp,tmp...)
+        fmt.Println(newtmp)
+        *ans = append(*ans,newtmp)
+    }
+
+    for i := 0; i < len(cand); i++{
+        tmp = append(tmp, cand[i])
+        newcand := make([]int,0)
+        //newcand = append(newcand, cand[:i]...)
+        newcand = append(newcand, cand[i+1:]...)
+        getcom(ans,newcand,tmp,k-1)
+        tmp = tmp[:len(tmp) - 1]
+    }
+}
+
+
+func combine(n int, k int) [][]int {
+    ans := make([][]int,0)
+    cand := make([]int,n)
+    for i:=0 ; i < n; i++{
+        cand[i] = i+1
+    }
+    tmp := make([]int,0)
+    getcom(&ans,cand,tmp,k)
+    return ans
+}
+
+
 func main() {
-	fmt.Println(titleToNumber("AB"))
+	fmt.Println(combine(4,2))
+	//fmt.Println(titleToNumber("AB"))
 	//fmt.Println(combinationSum2([]int{10,1,2,7,6,1,5},8))
 	//fmt.Println(jump([]int{8,2,4,4,4,9,5,2,5,8,8,0,8,6,9,1,1,6,3,5,1,2,6,6,0,4,8,6,0,3,2,8,7,6,5,1,7,0,3,4,8,3,5,9,0,4,0,1,0,5,9,2,0,7,0,2,1,0,8,2,5,1,2,3,9,7,4,7,0,0,1,8,5,6,7,5,1,9,9,3,5,0,7,5}))
 	//fmt.Println(searchRange([]int{1},1))
