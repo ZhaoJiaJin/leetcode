@@ -5,6 +5,7 @@ import (
 	"errors"
 	"strconv"
 	"strings"
+    "math"
 )
 
 func findSubstring(s string, words []string) []int {
@@ -1424,9 +1425,57 @@ func exist(board [][]byte, word string) bool {
     return false
 }
 
+func removeDuplicates(nums []int) int {
+    i := 0
+    for _,n := range nums{
+        if i < 2 || n > nums[i-2]{
+            nums[i] = n
+            i ++
+        }
+    }
+
+    return i
+}
+
+
+
+func minWindow(s string, t string) string {
+    m := make(map[byte]int)
+    for i:=0 ; i < len(t); i++{
+        m[t[i]] ++
+    }
+    count := len(t)
+    begin,end := 0,0
+    d := math.MaxInt32
+    head := 0
+    for end < len(s){
+        if m[s[end]] > 0{
+            count --
+        }
+        m[s[end]] --
+        end ++
+        for count == 0{
+            if end - begin < d{
+                d = end-begin
+                head = begin
+            }
+            if m[s[begin]] == 0{
+                count ++
+            }
+            fmt.Println(m)
+            m[s[begin]] ++
+            begin ++
+        }
+    }
+    if d == math.MaxInt32{
+        return ""
+    }else{
+        return s[head:d+head]
+    }
+}
 
 func main() {
-	fmt.Println(combine(4,2))
+	fmt.Println(minWindow("ADOBECODEBANC","ABC"))
 	//fmt.Println(titleToNumber("AB"))
 	//fmt.Println(combinationSum2([]int{10,1,2,7,6,1,5},8))
 	//fmt.Println(jump([]int{8,2,4,4,4,9,5,2,5,8,8,0,8,6,9,1,1,6,3,5,1,2,6,6,0,4,8,6,0,3,2,8,7,6,5,1,7,0,3,4,8,3,5,9,0,4,0,1,0,5,9,2,0,7,0,2,1,0,8,2,5,1,2,3,9,7,4,7,0,0,1,8,5,6,7,5,1,9,9,3,5,0,7,5}))
