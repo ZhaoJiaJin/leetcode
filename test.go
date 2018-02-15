@@ -1131,13 +1131,13 @@ func fullJustify(words []string, maxWidth int) []string {
 }
 
 type MyS struct{
-	l []string
+	l []int
 	length int
 }
 
-func (s *MyS)pop()(string,error){
+func (s *MyS)pop()(int,error){
 	if s.length == 0{
-		return "",errors.New("empty")
+		return 0,errors.New("empty")
 	}
 	last := s.l[s.length-1]
 	s.l = s.l[:s.length-1]
@@ -1145,7 +1145,7 @@ func (s *MyS)pop()(string,error){
 	return last,nil
 }
 
-func (s *MyS)push(v string){
+func (s *MyS)push(v int){
 	s.l = append(s.l,v)
 	s.length ++
 }
@@ -1154,8 +1154,11 @@ func (s *MyS)empty()bool{
 	return s.length == 0
 }
 
+func (s *MyS)back()int{
+	return s.l[s.length-1]
+}
 
-func simplifyPath(path string) string {
+/*func simplifyPath(path string) string {
 	spath := strings.Split(path,"/")    
 	s := MyS{}
 	for i:=0; i < len(spath); i++{
@@ -1169,7 +1172,7 @@ func simplifyPath(path string) string {
 		}
 	}
 	return "/" + strings.Join(s.l,"/")
-}
+}*/
 
 
 func minDistance(word1 string, word2 string) int {
@@ -1474,8 +1477,75 @@ func minWindow(s string, t string) string {
     }
 }
 
+/*func cal_cp(h []int,begin,end int)int{
+    min := h[begin]
+    for i:=begin+1; i <= end; i++{
+        if h[i] < min{
+            min = h[i]
+        }
+    }
+    return min * (end-begin+1)
+}
+
+
+
+func largestRectangleArea(heights []int) int {
+    l := len(heights)
+    if l == 0{
+        return 0
+    }
+    max := 0
+    for i := 0 ; i < l ; i++{
+        for j := i ; j < l ; j++{
+            cp := cal_cp(heights,i,j)
+            fmt.Println(i,j,cp)
+            if cp > max{
+                fmt.Println(i,j,cp)
+                max = cp
+            }
+        }
+    }
+    return max
+}*/
+
+func largestRectangleArea(heights []int) int {
+    l := len(heights)
+    if l == 0{
+        return 0
+    }
+    ret := 0
+    heights = append(heights,0)
+    index := MyS{}
+
+    for i := 0 ; i < l+1 ; i++{
+        for !index.empty() && heights[index.back()] > heights[i]{
+            h := heights[index.back()]
+            index.pop()
+
+            var sidx int
+            if index.empty(){
+                sidx = -1
+            }else{
+                sidx = index.back()
+            }
+            fmt.Println(index)
+            fmt.Println(h * (i-sidx-1))
+            if h * (i-sidx-1) > ret{
+                ret = h * (i-sidx-1)
+            }
+        }
+        index.push(i)
+    }
+    return ret
+}
+
+
+
 func main() {
-	fmt.Println(minWindow("ADOBECODEBANC","ABC"))
+	//fmt.Println(largestRectangleArea([]int{2,1,5,6,2,3}))
+	//fmt.Println(largestRectangleArea([]int{1,2,3,4,5,6,7,8,9}))
+	fmt.Println(largestRectangleArea([]int{1,2,3}))
+    //[2,1,5,6,2,3]
 	//fmt.Println(titleToNumber("AB"))
 	//fmt.Println(combinationSum2([]int{10,1,2,7,6,1,5},8))
 	//fmt.Println(jump([]int{8,2,4,4,4,9,5,2,5,8,8,0,8,6,9,1,1,6,3,5,1,2,6,6,0,4,8,6,0,3,2,8,7,6,5,1,7,0,3,4,8,3,5,9,0,4,0,1,0,5,9,2,0,7,0,2,1,0,8,2,5,1,2,3,9,7,4,7,0,0,1,8,5,6,7,5,1,9,9,3,5,0,7,5}))
