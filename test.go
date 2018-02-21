@@ -1528,23 +1528,136 @@ func largestRectangleArea(heights []int) int {
             }else{
                 sidx = index.back()
             }
-            fmt.Println(index)
             fmt.Println(h * (i-sidx-1))
             if h * (i-sidx-1) > ret{
                 ret = h * (i-sidx-1)
             }
         }
         index.push(i)
+        fmt.Println(index)
     }
     return ret
 }
 
+func isScramble(s1 string, s2 string) bool {
+    fmt.Println(s1,s2)
+    if s1 == s2{
+        return true
+    }
+    if len(s1) != len(s2){
+        return false
+    }
+    l := len(s1)
+    arr := make([]int,26)
+    for i:=0; i<l ;i++{
+        arr[s1[i]-'a']++
+        arr[s2[i]-'a']--
+    }
+    for i:=0; i<26 ;i++{
+        if arr[i] != 0{
+            return false
+        }
+    }
+    for i:=1; i<l ;i++{
+        if isScramble(s1[:i],s2[l-i:]) && isScramble(s1[i:],s2[:l-i]){
+            return true
+        }
+        if isScramble(s1[:i],s2[:i]) && isScramble(s1[i:],s2[i:]){
+            return true
+        }
+    }
+    return false
+}
 
+func getsubdup(nums []int)[][]int{
+    ans := make([][]int,0)
+    ans = append(ans,[]int{})
+    if len(nums) == 0{
+        return ans
+    }
+    for i:= 0; i < len(nums); i++{
+        if i>0 && nums[i] == nums[i-1]{
+            continue
+        }
+        tmpnum := make([]int,0)
+        //tmpnum = append(tmpnum,nums[:i]...)
+        tmpnum = append(tmpnum,nums[i+1:]...)
+        tmpans := getsubdup(tmpnum)
+        for _,t := range tmpans{
+            t = append(t,nums[i])
+            ans = append(ans,t)
+        }
+    }
+
+    return ans
+}
+
+func subsetsWithDup(nums []int) [][]int {
+    sort(nums)
+    return getsubdup(nums)
+}
+
+
+func numDecodings(s string) int {
+    n := len(s)
+    if n <= 0{
+        return 0
+    }
+    ans := make([]int,n+1)
+    ans[0] = 1
+    if s[0] == '0'{
+        ans[1] = 0
+    }else{
+        ans[1] = 1
+    }
+    for i:=2 ; i <= n ; i++{
+        first,_ := strconv.Atoi(s[i-1:i])
+        second,_ := strconv.Atoi(s[i-2:i])
+        if first >= 1 && first <= 9{
+            ans[i] += ans[i-1]
+        }
+        if second >= 10 && second <= 26{
+            ans[i] += ans[i-2]
+        }
+    }
+    return ans[n]
+
+}
+
+
+func restoreIpAddresses(s string) []string {
+    ans := make([]string,0)
+    l := len(s)
+    //3 loops
+    for i1 := 0; i1 < 4 && i1 < l-2; i1++{
+        for i2 := i1+1; i2 < i1+4 && i2 < l-1; i2++{
+            for i3 := i2+1; i3 < i2+4 && i3 < l; i3++{
+                s1,s2,s3,s4 := s[:i1],s[i1:i2],s[i2:i3],s[i3:]
+                if validip(s1) && validip(s2) && validip(s3) && validip(s4){
+                    ans = append(ans,s1+"."+s2+"."+s3+"."+s4)
+                }
+            }
+        }
+    }
+    return ans
+}
+
+func validip(s string)bool{
+    if len(s) == 0 || len(s) > 3 || (s[0] == '0' && len(s)>1){
+        return false
+    }
+    num,_ := strconv.Atoi(s)
+    if num > 255 {
+        return false
+    }
+    return true
+}
 
 func main() {
-	//fmt.Println(largestRectangleArea([]int{2,1,5,6,2,3}))
+	fmt.Println(restoreIpAddresses("25525511135"))
+	//fmt.Println(subsetsWithDup([]int{1,2,2}))
 	//fmt.Println(largestRectangleArea([]int{1,2,3,4,5,6,7,8,9}))
-	fmt.Println(largestRectangleArea([]int{1,2,3}))
+	//fmt.Println(largestRectangleArea([]int{1,2,3}))
     //[2,1,5,6,2,3]
 	//fmt.Println(titleToNumber("AB"))
 	//fmt.Println(combinationSum2([]int{10,1,2,7,6,1,5},8))
@@ -1564,6 +1677,8 @@ func main() {
 
 
 /*
+"xstjzkfpkggnhjzkpfjoguxvkbuopi"
+"xbouipkvxugojfpkzjhnggkpfkzjts"
 ["What","must","be","shall","be."]
 12
 [10,1,2,7,6,1,5]
