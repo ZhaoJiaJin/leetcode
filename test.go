@@ -1848,6 +1848,45 @@ func traverse(root *TreeNode) {
 	traverse(root.Right)
 }
 
+/**
+ * Definition for a binary tree node.
+ * type TreeNode struct {
+ *     Val int
+ *     Left *TreeNode
+ *     Right *TreeNode
+ * }
+ */
+
+func lo(ans *[][]int,levelnode []*TreeNode){
+    if len(levelnode) == 0{
+        return 
+    }
+        levelans := make([]int,0)
+        nextlevelnode := make([]*TreeNode,0)
+        for _,nd := range levelnode{
+                levelans = append(levelans,nd.Val)
+                if nd.Left != nil{
+                        nextlevelnode = append(nextlevelnode,nd.Left)
+                }
+                if nd.Right!= nil{
+                        nextlevelnode = append(nextlevelnode,nd.Right)
+                }
+        }
+    *ans = append(*ans,levelans)
+        if len(nextlevelnode) != 0{
+                lo(ans,nextlevelnode)
+        }
+}
+func levelOrder(root *TreeNode) [][]int {
+        ans := make([][]int,0)
+    if root == nil{
+        return ans
+        
+    }
+        levelnode := []*TreeNode{root}
+        lo(&ans,levelnode)
+        return ans
+}
 
 func main() {
 	a := &TreeNode{Val:2}
