@@ -1324,6 +1324,34 @@ func nextGreatestLetter(letters []byte, target byte) byte {
 }
 
 
+/**
+ * Definition for singly-linked list.
+ * type ListNode struct {
+ *     Val int
+ *     Next *ListNode
+ * }
+ */
+func reverseBetween(head *ListNode, m int, n int) *ListNode {
+	dummy := &ListNode{}
+	dummy.Next = head
+	//pre start then
+	pre := dummy
+	for i:=0; i < m-1; i++{
+		pre = pre.Next
+	}
+	start := pre.Next
+	then := start.Next
+	for i:=0; i < n-m; i++{
+		start.Next = then.Next
+		then.Next = pre.Next
+		pre.Next = then
+		then = start.Next
+	}
+	return dummy.Next
+
+}
+
+
 func minCostClimbingStairs(cost []int) int {
 	l := len(cost)
 	dp := make([]int,l)
@@ -1336,8 +1364,85 @@ func minCostClimbingStairs(cost []int) int {
 }
 
 
+func dpnum(start, end int, dp [][]int)int{
+	if start > end{
+		return 1
+	}
+	if dp[start][end] != 0{
+		return dp[start][end]
+	}
+	if start >= end {
+		dp[start][end] = 1
+		return 1
+	}
+	ans := 0
+	for i:=start; i <= end; i++{
+		ans += (dpnum(start,i-1,dp) * dpnum(i+1,end,dp))
+	}
+	dp[start][end] = ans
+	return ans
+}
+
+
+func numTrees(n int) int {
+	dp := make([][]int,n+1)
+	for i:=0; i<=n; i++{
+		dp[i] = make([]int,n+1)
+	}
+	ans := dpnum(1,n,dp)
+	return ans
+}
+
+type TreeNode struct {
+    Val int
+    Left *TreeNode
+    Right *TreeNode
+}
+
+func dpgene(start,end int)([]*TreeNode){
+	ans := make([]*TreeNode,0)
+	if start > end{
+		ans = append(ans,nil)
+		return ans
+	}
+	if start == end{
+		node := &TreeNode{}
+		node.Val = start
+		ans = append(ans,node)
+		return ans
+	}
+	for i:=start; i <= end; i++{
+		lefts := dpgene(start,i-1)
+		rights := dpgene(i+1,end)
+		
+		for _,l := range lefts{
+			for _,r := range rights{
+				node := &TreeNode{}
+				node.Val = i
+				node.Left = l
+				node.Right = r
+				ans = append(ans,node)
+			}
+		}
+	}
+	return ans
+}
+
+
+func generateTrees(n int) []*TreeNode {
+	ans := make([]*TreeNode,0)
+	for _,v := range dpgene(1,n){
+		if v != nil{
+			ans = append(ans,v)
+		}
+	}
+	return ans
+}
+
+
 func main() {
-	fmt.Println(titleToNumber("AB"))
+	ans := generateTrees(0)
+	fmt.Println(ans)
 	//fmt.Println(combinationSum2([]int{10,1,2,7,6,1,5},8))
 	//fmt.Println(jump([]int{8,2,4,4,4,9,5,2,5,8,8,0,8,6,9,1,1,6,3,5,1,2,6,6,0,4,8,6,0,3,2,8,7,6,5,1,7,0,3,4,8,3,5,9,0,4,0,1,0,5,9,2,0,7,0,2,1,0,8,2,5,1,2,3,9,7,4,7,0,0,1,8,5,6,7,5,1,9,9,3,5,0,7,5}))
 	//fmt.Println(searchRange([]int{1},1))
