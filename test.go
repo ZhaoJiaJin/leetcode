@@ -5,6 +5,7 @@ import (
 	"errors"
 	"strconv"
 	"strings"
+    "math"
 )
 
 func findSubstring(s string, words []string) []int {
@@ -1130,13 +1131,13 @@ func fullJustify(words []string, maxWidth int) []string {
 }
 
 type MyS struct{
-	l []string
+	l []int
 	length int
 }
 
-func (s *MyS)pop()(string,error){
+func (s *MyS)pop()(int,error){
 	if s.length == 0{
-		return "",errors.New("empty")
+		return 0,errors.New("empty")
 	}
 	last := s.l[s.length-1]
 	s.l = s.l[:s.length-1]
@@ -1144,7 +1145,7 @@ func (s *MyS)pop()(string,error){
 	return last,nil
 }
 
-func (s *MyS)push(v string){
+func (s *MyS)push(v int){
 	s.l = append(s.l,v)
 	s.length ++
 }
@@ -1153,8 +1154,11 @@ func (s *MyS)empty()bool{
 	return s.length == 0
 }
 
+func (s *MyS)back()int{
+	return s.l[s.length-1]
+}
 
-func simplifyPath(path string) string {
+/*func simplifyPath(path string) string {
 	spath := strings.Split(path,"/")    
 	s := MyS{}
 	for i:=0; i < len(spath); i++{
@@ -1168,7 +1172,7 @@ func simplifyPath(path string) string {
 		}
 	}
 	return "/" + strings.Join(s.l,"/")
-}
+}*/
 
 
 func minDistance(word1 string, word2 string) int {
@@ -1323,7 +1327,6 @@ func nextGreatestLetter(letters []byte, target byte) byte {
 	return letters[0]
 }
 
-
 /**
  * Definition for singly-linked list.
  * type ListNode struct {
@@ -1350,6 +1353,8 @@ func reverseBetween(head *ListNode, m int, n int) *ListNode {
 	return dummy.Next
 
 }
+
+
 
 
 func minCostClimbingStairs(cost []int) int {
@@ -1440,9 +1445,328 @@ func generateTrees(n int) []*TreeNode {
 }
 
 
+
+func getcom(ans *[][]int,cand []int,tmp []int,k int){
+    if k == 0{
+        newtmp := make([]int,0)
+        newtmp = append(newtmp,tmp...)
+        fmt.Println(newtmp)
+        *ans = append(*ans,newtmp)
+    }
+
+    for i := 0; i < len(cand); i++{
+        tmp = append(tmp, cand[i])
+        newcand := make([]int,0)
+        //newcand = append(newcand, cand[:i]...)
+        newcand = append(newcand, cand[i+1:]...)
+        getcom(ans,newcand,tmp,k-1)
+        tmp = tmp[:len(tmp) - 1]
+    }
+}
+
+
+func combine(n int, k int) [][]int {
+    ans := make([][]int,0)
+    cand := make([]int,n)
+    for i:=0 ; i < n; i++{
+        cand[i] = i+1
+    }
+    tmp := make([]int,0)
+    getcom(&ans,cand,tmp,k)
+    return ans
+}
+
+
+func getsub(ans *[][]int,cand []int,tmp []int){
+    newtmp := make([]int,0)
+    newtmp = append(newtmp,tmp...)
+    fmt.Println(newtmp)
+    *ans = append(*ans,newtmp)
+
+    for i := 0; i < len(cand); i++{
+        tmp = append(tmp, cand[i])
+        newcand := make([]int,0)
+        //newcand = append(newcand, cand[:i]...)
+        newcand = append(newcand, cand[i+1:]...)
+        getsub(ans,newcand,tmp)
+        tmp = tmp[:len(tmp) - 1]
+    }
+}
+
+
+func subsets(nums []int) [][]int {
+    ans := make([][]int,0)
+    tmp := make([]int,0)
+    getsub(&ans,nums,tmp)
+    return ans
+}
+
+
+func check_board(board [][]byte,i,j int, word string,haslen int)bool{
+    if len(word) == haslen{
+        return true
+    }
+
+    if i<0 || j<0 || i >= len(board) || j >= len(board[i]){
+        return false
+    }
+    if board[i][j] != word[haslen]{
+        fmt.Println(board[i][j],word[0],board[i][j] != word[0])
+        return false
+    }
+    ori := board[i][j]
+    board[i][j] = ' '
+    valid := check_board(board,i-1,j,word,haslen+1) || check_board(board,i,j-1,word,haslen+1) || check_board(board,i,j+1,word,haslen+1) || check_board(board,i+1,j,word,haslen+1)
+    board[i][j] = ori
+    return valid
+}
+
+
+func exist(board [][]byte, word string) bool {
+    for i:=0; i < len(board); i++{
+        for j := 0; j < len(board[i]); j++{
+                if check_board(board,i,j,word,0){
+                    return true
+                }
+        }
+    }
+
+    return false
+}
+
+func removeDuplicates(nums []int) int {
+    i := 0
+    for _,n := range nums{
+        if i < 2 || n > nums[i-2]{
+            nums[i] = n
+            i ++
+        }
+    }
+
+    return i
+}
+
+
+
+func minWindow(s string, t string) string {
+    m := make(map[byte]int)
+    for i:=0 ; i < len(t); i++{
+        m[t[i]] ++
+    }
+    count := len(t)
+    begin,end := 0,0
+    d := math.MaxInt32
+    head := 0
+    for end < len(s){
+        if m[s[end]] > 0{
+            count --
+        }
+        m[s[end]] --
+        end ++
+        for count == 0{
+            if end - begin < d{
+                d = end-begin
+                head = begin
+            }
+            if m[s[begin]] == 0{
+                count ++
+            }
+            fmt.Println(m)
+            m[s[begin]] ++
+            begin ++
+        }
+    }
+    if d == math.MaxInt32{
+        return ""
+    }else{
+        return s[head:d+head]
+    }
+}
+
+/*func cal_cp(h []int,begin,end int)int{
+    min := h[begin]
+    for i:=begin+1; i <= end; i++{
+        if h[i] < min{
+            min = h[i]
+        }
+    }
+    return min * (end-begin+1)
+}
+
+
+
+func largestRectangleArea(heights []int) int {
+    l := len(heights)
+    if l == 0{
+        return 0
+    }
+    max := 0
+    for i := 0 ; i < l ; i++{
+        for j := i ; j < l ; j++{
+            cp := cal_cp(heights,i,j)
+            fmt.Println(i,j,cp)
+            if cp > max{
+                fmt.Println(i,j,cp)
+                max = cp
+            }
+        }
+    }
+    return max
+}*/
+
+func largestRectangleArea(heights []int) int {
+    l := len(heights)
+    if l == 0{
+        return 0
+    }
+    ret := 0
+    heights = append(heights,0)
+    index := MyS{}
+
+    for i := 0 ; i < l+1 ; i++{
+        for !index.empty() && heights[index.back()] > heights[i]{
+            h := heights[index.back()]
+            index.pop()
+
+            var sidx int
+            if index.empty(){
+                sidx = -1
+            }else{
+                sidx = index.back()
+            }
+            fmt.Println(h * (i-sidx-1))
+            if h * (i-sidx-1) > ret{
+                ret = h * (i-sidx-1)
+            }
+        }
+        index.push(i)
+        fmt.Println(index)
+    }
+    return ret
+}
+
+func isScramble(s1 string, s2 string) bool {
+    fmt.Println(s1,s2)
+    if s1 == s2{
+        return true
+    }
+    if len(s1) != len(s2){
+        return false
+    }
+    l := len(s1)
+    arr := make([]int,26)
+    for i:=0; i<l ;i++{
+        arr[s1[i]-'a']++
+        arr[s2[i]-'a']--
+    }
+    for i:=0; i<26 ;i++{
+        if arr[i] != 0{
+            return false
+        }
+    }
+    for i:=1; i<l ;i++{
+        if isScramble(s1[:i],s2[l-i:]) && isScramble(s1[i:],s2[:l-i]){
+            return true
+        }
+        if isScramble(s1[:i],s2[:i]) && isScramble(s1[i:],s2[i:]){
+            return true
+        }
+    }
+    return false
+}
+
+func getsubdup(nums []int)[][]int{
+    ans := make([][]int,0)
+    ans = append(ans,[]int{})
+    if len(nums) == 0{
+        return ans
+    }
+    for i:= 0; i < len(nums); i++{
+        if i>0 && nums[i] == nums[i-1]{
+            continue
+        }
+        tmpnum := make([]int,0)
+        //tmpnum = append(tmpnum,nums[:i]...)
+        tmpnum = append(tmpnum,nums[i+1:]...)
+        tmpans := getsubdup(tmpnum)
+        for _,t := range tmpans{
+            t = append(t,nums[i])
+            ans = append(ans,t)
+        }
+    }
+
+    return ans
+}
+
+func subsetsWithDup(nums []int) [][]int {
+    sort(nums)
+    return getsubdup(nums)
+}
+
+
+func numDecodings(s string) int {
+    n := len(s)
+    if n <= 0{
+        return 0
+    }
+    ans := make([]int,n+1)
+    ans[0] = 1
+    if s[0] == '0'{
+        ans[1] = 0
+    }else{
+        ans[1] = 1
+    }
+    for i:=2 ; i <= n ; i++{
+        first,_ := strconv.Atoi(s[i-1:i])
+        second,_ := strconv.Atoi(s[i-2:i])
+        if first >= 1 && first <= 9{
+            ans[i] += ans[i-1]
+        }
+        if second >= 10 && second <= 26{
+            ans[i] += ans[i-2]
+        }
+    }
+    return ans[n]
+
+}
+
+
+func restoreIpAddresses(s string) []string {
+    ans := make([]string,0)
+    l := len(s)
+    //3 loops
+    for i1 := 0; i1 < 4 && i1 < l-2; i1++{
+        for i2 := i1+1; i2 < i1+4 && i2 < l-1; i2++{
+            for i3 := i2+1; i3 < i2+4 && i3 < l; i3++{
+                s1,s2,s3,s4 := s[:i1],s[i1:i2],s[i2:i3],s[i3:]
+                if validip(s1) && validip(s2) && validip(s3) && validip(s4){
+                    ans = append(ans,s1+"."+s2+"."+s3+"."+s4)
+                }
+            }
+        }
+    }
+    return ans
+}
+
+func validip(s string)bool{
+    if len(s) == 0 || len(s) > 3 || (s[0] == '0' && len(s)>1){
+        return false
+    }
+    num,_ := strconv.Atoi(s)
+    if num > 255 {
+        return false
+    }
+    return true
+}
+
 func main() {
 	ans := generateTrees(0)
 	fmt.Println(ans)
+	//fmt.Println(subsetsWithDup([]int{1,2,2}))
+	//fmt.Println(largestRectangleArea([]int{1,2,3,4,5,6,7,8,9}))
+	//fmt.Println(largestRectangleArea([]int{1,2,3}))
+    //[2,1,5,6,2,3]
+	//fmt.Println(titleToNumber("AB"))
 	//fmt.Println(combinationSum2([]int{10,1,2,7,6,1,5},8))
 	//fmt.Println(jump([]int{8,2,4,4,4,9,5,2,5,8,8,0,8,6,9,1,1,6,3,5,1,2,6,6,0,4,8,6,0,3,2,8,7,6,5,1,7,0,3,4,8,3,5,9,0,4,0,1,0,5,9,2,0,7,0,2,1,0,8,2,5,1,2,3,9,7,4,7,0,0,1,8,5,6,7,5,1,9,9,3,5,0,7,5}))
 	//fmt.Println(searchRange([]int{1},1))
@@ -1460,6 +1784,8 @@ func main() {
 
 
 /*
+"xstjzkfpkggnhjzkpfjoguxvkbuopi"
+"xbouipkvxugojfpkzjhnggkpfkzjts"
 ["What","must","be","shall","be."]
 12
 [10,1,2,7,6,1,5]
