@@ -1759,9 +1759,104 @@ func validip(s string)bool{
     return true
 }
 
+func isInterleave(s1 string, s2 string, s3 string) bool {
+	if len(s3) == 0{
+		if len(s1) == 0 && len(s2) == 0{
+			return true
+		}else{
+			return false
+		}
+	}
+	if len(s1) == 0 {
+		if s2 == s3{
+			return true
+		}else{
+			return false
+		}
+	}
+	if len(s2) == 0 {
+		if s1 == s3{
+			return true
+		}else{
+			return false
+		}
+	}
+
+	start1 := s1[0]
+	start2 := s2[0]
+	start3 := s3[0]
+
+	return (start1 == start3 && isInterleave(s1[1:],s2,s3[1:])) || (start2 == start3 && isInterleave(s1,s2[1:],s3[1:]))
+	    
+}
+
+/**
+ * Definition for a binary tree node.
+ * type TreeNode struct {
+ *     Val int
+ *     Left *TreeNode
+ *     Right *TreeNode
+ * }
+ */
+
+func ivb(root *TreeNode, min,max int64)bool{
+	if root == nil{
+		return true
+	}
+	if int64(root.Val) <= min || int64(root.Val) >= max{
+		return false
+	}
+	return ivb(root.Left,min,int64(root.Val)) && ivb(root.Right,int64(root.Val),max)
+}
+
+func isValidBST(root *TreeNode) bool {
+	return ivb(root,math.MinInt64,math.MaxInt64)
+}
+
+
+
+/**
+ * Definition for a binary tree node.
+ * type TreeNode struct {
+ *     Val int
+ *     Left *TreeNode
+ *     Right *TreeNode
+ * }
+ */
+var first,second,pre *TreeNode
+func recoverTree(root *TreeNode)  {
+ 	pre = &TreeNode{Val:math.MinInt32}   
+	traverse(root)
+	tmp := first.Val
+	first.Val = second.Val
+	second.Val = tmp
+}
+
+func traverse(root *TreeNode) {
+	if root == nil{
+		return
+	}
+	traverse(root.Left)
+	
+	if first == nil && pre.Val >= root.Val{
+		first = pre
+	}
+	if first != nil && pre.Val >= root.Val{
+		second = root
+	}
+	pre = root
+	traverse(root.Right)
+}
+
+
 func main() {
-	ans := generateTrees(0)
-	fmt.Println(ans)
+	a := &TreeNode{Val:2}
+	a.Right = &TreeNode{Val:1}
+	fmt.Println(a)
+	fmt.Println(a.Right)
+	recoverTree(a)
+	fmt.Println(a)
+	fmt.Println(a.Right)
 	//fmt.Println(subsetsWithDup([]int{1,2,2}))
 	//fmt.Println(largestRectangleArea([]int{1,2,3,4,5,6,7,8,9}))
 	//fmt.Println(largestRectangleArea([]int{1,2,3}))
