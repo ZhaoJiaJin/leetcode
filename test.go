@@ -1997,14 +1997,60 @@ func pathSum(root *TreeNode, sum int) [][]int {
 	return ans
 }
 
+
+func flatten(root *TreeNode)  {
+    if root == nil{
+        return
+    }
+    flatten(root.Right)
+    flatten(root.Left)
+    root.Right = pre
+    root.Left = nil
+    pre = root
+}
+
+func numDistinct(s string, t string) int {
+	sl := len(s)
+	tl := len(t)
+	mem := make([][]int,tl+1)
+	for i:=0; i<=tl; i++{
+		mem[i] = make([]int,sl+1)
+	}
+	for i:=0; i<=sl; i++{
+		mem[0][i] = 1
+	}
+	for i:=0; i<tl; i++{
+		for j:=0; j<sl; j++{
+			if t[i] == s[j]{
+				mem[i+1][j+1] = mem[i][j] + mem[i+1][j]
+			}else{
+				mem[i+1][j+1] = mem[i+1][j]
+			}
+		}
+	}
+	return mem[tl][sl]
+}
+
+
+func minimumTotal(triangle [][]int) int {
+	height := len(triangle)
+	minpath := triangle[height-1]
+	for h := height-2; h>=0; h--{
+		for i:=0; i<=h; i++{
+			minpath[i] = min(minpath[i],minpath[i+1]) + triangle[h][i]
+		}
+	}
+	return minpath[0]
+}
+
+
+
 func main() {
-	a := &TreeNode{Val: 2}
-	a.Right = &TreeNode{Val: 1}
+	a := &TreeNode{Val: 1}
+	a.Left= &TreeNode{Val: 2}
 	fmt.Println(a)
-	fmt.Println(a.Right)
-	recoverTree(a)
-	fmt.Println(a)
-	fmt.Println(a.Right)
+	flatten(a)
+	fmt.Println(a.Left)
 	//fmt.Println(subsetsWithDup([]int{1,2,2}))
 	//fmt.Println(largestRectangleArea([]int{1,2,3,4,5,6,7,8,9}))
 	//fmt.Println(largestRectangleArea([]int{1,2,3}))
