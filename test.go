@@ -1897,6 +1897,106 @@ func zigzagLevelOrder(root *TreeNode) [][]int {
 
 }
 
+
+/**
+ * Definition for a binary tree node.
+ * type TreeNode struct {
+ *     Val int
+ *     Left *TreeNode
+ *     Right *TreeNode
+ * }
+ */
+/*
+func bthelper(prestart,instart,inend int,preorder,inorder []int)*TreeNode{
+	if prestart > len(preorder)-1 || instart > inend{
+		return nil
+	}
+	node := &TreeNode{Val:preorder[prestart]}
+	var i int
+	for i=instart; i<= inend; i++{
+		if inorder[i] == preorder[prestart]{
+			break
+		}
+	}
+	node.Left = bthelper(prestart+1,instart,i-1,preorder,inorder)
+	node.Right = bthelper(prestart+(i-instart+1),i+1,inend,preorder,inorder)
+
+	return node
+}
+func buildTree(preorder []int, inorder []int) *TreeNode {
+	return bthelper(0,0,len(inorder)-1,preorder,inorder)   
+}*/
+
+func bthelper(is,ie,ps,pe int,inorder,postorder []int)*TreeNode{
+	if is > ie || ps > pe{
+		return nil
+	}
+	node := &TreeNode{Val:postorder[pe]}
+	var pos int
+	for i:=is; i<= ie; i++{
+		if inorder[i] == node.Val{
+			pos = i
+			break
+		}
+	}
+	node.Left = bthelper(is,pos-1, ps, ps+(pos-is+1),inorder,postorder)
+	node.Right = bthelper(pos+1,ie, pe-(ie-pos),pe-1,inorder,postorder)
+
+	return node
+}
+
+func buildTree(inorder []int, postorder []int) *TreeNode {
+	return bthelper(0,len(inorder)-1,0,len(postorder)-1,inorder,postorder)
+}
+
+
+func sltbhelper(head,tail *ListNode) *TreeNode{
+	slow,fast := head,head
+	if head == tail{
+		return nil
+	}
+	for fast != tail && fast.Next != tail{
+		fast = fast.Next.Next
+		slow = slow.Next
+	}
+	root := &TreeNode{Val:slow.Val}
+	root.Left = sltbhelper(head,slow)
+	root.Right = sltbhelper(slow.Next,tail)
+	return root
+}
+
+func sortedListToBST(head *ListNode) *TreeNode {
+	if head == nil{
+		return nil
+	}else{
+		return sltbhelper(head,nil)
+	}
+}
+
+func findans(ans *[][]int,tmpans []int,root *TreeNode,sum int){
+	if root == nil{
+		return
+	}
+	tmpans = append(tmpans,root.Val)
+	if root.Left == nil && root.Right == nil && sum - root.Val == 0{
+		tmp := make([]int,0)
+		tmp = append(tmp,tmpans...)
+		*ans = append(*ans,tmp)
+		return
+	}
+	findans(ans,tmpans,root.Left,sum-root.Val)
+	findans(ans,tmpans,root.Right,sum-root.Val)
+	tmpans = tmpans[:len(tmpans)-1]
+}
+
+
+func pathSum(root *TreeNode, sum int) [][]int {
+	ans := make([][]int,0)
+	tmpans := make([]int,0)
+	findans(&ans,tmpans,root,sum)
+	return ans
+}
+
 func main() {
 	a := &TreeNode{Val: 2}
 	a.Right = &TreeNode{Val: 1}
