@@ -2043,14 +2043,28 @@ func minimumTotal(triangle [][]int) int {
 	return minpath[0]
 }
 
+var mv int
+
+func maxPathSum(root *TreeNode) int {
+	maxPathSumhelper(root)
+	return mv
+}
+func maxPathSumhelper(root *TreeNode) int {
+	if root == nil{
+		return 0
+	}
+	left := max(0,maxPathSumhelper(root.Left))
+	right := max(0,maxPathSumhelper(root.Right))
+	mv = max(mv,left+right+root.Val)
+	return max(left,right) + root.Val
+}
 
 
 func main() {
-	a := &TreeNode{Val: 1}
-	a.Left= &TreeNode{Val: 2}
-	fmt.Println(a)
-	flatten(a)
-	fmt.Println(a.Left)
+	a := &TreeNode{Val: 2}
+	a.Left= &TreeNode{Val: 1}
+	a.Right = &TreeNode{Val: 3}
+	fmt.Println(maxPathSum(a))
 	//fmt.Println(subsetsWithDup([]int{1,2,2}))
 	//fmt.Println(largestRectangleArea([]int{1,2,3,4,5,6,7,8,9}))
 	//fmt.Println(largestRectangleArea([]int{1,2,3}))
