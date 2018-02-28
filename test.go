@@ -2059,12 +2059,53 @@ func maxPathSumhelper(root *TreeNode) int {
 	return max(left,right) + root.Val
 }
 
+var min_len int
+
+
+func ladderLength(beginWord string, endWord string, wordList []string) int {
+	min_len = 0
+	llhelper(endWord,[]string{beginWord},wordList,1)
+	return min_len
+}
+
+func isOneDiff(s1,s2 string)bool{
+	diff := 0
+	for i:=0; i < len(s1); i++{
+		if s1[i] != s2[i]{
+			diff ++
+		}
+	}
+	return diff == 1
+}
+
+func llhelper(end string,words []string,wordList []string,level int){
+	fmt.Println("level",words)
+	//fmt.Println("words",wordList)
+	newwords := make([]string,0)
+	if len(words) == 0 || len(wordList) == 0{
+		return
+	}
+	for _,begin := range words{
+		for i:=0; i < len(wordList);{
+			if isOneDiff(begin,wordList[i]){
+
+				if end == wordList[i]{
+					min_len = level+1
+					return
+				}
+				newwords = append(newwords,wordList[i])
+				wordList = append(wordList[:i],wordList[i+1:]...)
+			}else{
+				i++
+			}
+		}
+	}
+	llhelper(end,newwords,wordList,level+1)
+}
 
 func main() {
-	a := &TreeNode{Val: 2}
-	a.Left= &TreeNode{Val: 1}
-	a.Right = &TreeNode{Val: 3}
-	fmt.Println(maxPathSum(a))
+	fmt.Println(ladderLength("hit","cog",[]string{"hot","dot","dog","lot","log","cog"}))
+	//fmt.Println(ladderLength("qa","sq",[]string{"si","go","se","cm","so","ph","mt","db","mb","sb","kr","ln","tm","le","av","sm","ar","ci","ca","br","ti","ba","to","ra","fa","yo","ow","sn","ya","cr","po","fe","ho","ma","re","or","rn","au","ur","rh","sr","tc","lt","lo","as","fr","nb","yb","if","pb","ge","th","pm","rb","sh","co","ga","li","ha","hz","no","bi","di","hi","qa","pi","os","uh","wm","an","me","mo","na","la","st","er","sc","ne","mn","mi","am","ex","pt","io","be","fm","ta","tb","ni","mr","pa","he","lr","sq","ye"}))
 	//fmt.Println(subsetsWithDup([]int{1,2,2}))
 	//fmt.Println(largestRectangleArea([]int{1,2,3,4,5,6,7,8,9}))
 	//fmt.Println(largestRectangleArea([]int{1,2,3}))
@@ -2100,4 +2141,9 @@ func main() {
 
 "barfoofoobarthefoobarman"
 ["bar","foo","the"]
+
+"qa"
+"sq"
+["si","go","se","cm","so","ph","mt","db","mb","sb","kr","ln","tm","le","av","sm","ar","ci","ca","br","ti","ba","to","ra","fa","yo","ow","sn","ya","cr","po","fe","ho","ma","re","or","rn","au","ur","rh","sr","tc","lt","lo","as","fr","nb","yb","if","pb","ge","th","pm","rb","sh","co","ga","li","ha","hz","no","bi","di","hi","qa","pi","os","uh","wm","an","me","mo","na","la","st","er","sc","ne","mn","mi","am","ex","pt","io","be","fm","ta","tb","ni","mr","pa","he","lr","sq","ye"]
+
 */
