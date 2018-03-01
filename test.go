@@ -244,7 +244,7 @@ func validSk(board [][]byte, row, col int, c byte) bool {
 	return true
 }
 
-func solve(board [][]byte) bool {
+func solve1(board [][]byte) bool {
 	for i := 0; i < len(board); i++ {
 		for j := 0; j < len(board[i]); j++ {
 			if board[i][j] == '.' {
@@ -252,7 +252,7 @@ func solve(board [][]byte) bool {
 					if validSk(board, i, j, byte(c)) {
 						board[i][j] = byte(c)
 
-						if solve(board) {
+						if solve1(board) {
 							return true
 						} else {
 							board[i][j] = '.'
@@ -273,7 +273,7 @@ func solveSudoku(board [][]byte) {
 	if len(board) == 0 {
 		return
 	}
-	solve(board)
+	solve1(board)
 }
 
 /*func combinationSum(candidates []int, target int) [][]int {
@@ -2257,14 +2257,130 @@ func snhelper(root *TreeNode,tmp int){
 	snhelper(root.Right,tmp)
 }
 
+type P struct{
+	rn int
+	cn int
+}
+
+type StackP []P
+
+func (s *StackP)pop()(P){
+	ans := (*s)[len(*s)-1]
+	*s = (*s)[:len(*s)-1]
+	return ans
+}
+
+func (s *StackP)push(p P){
+	*s = append(*s,p)
+}
+
+func (s *StackP)empty()(bool){
+	return len(*s) == 0
+}
+
+func mkboard(m,n int)[][]bool{
+	ret := make([][]bool,m)
+	for i := 0; i < m; i++{
+		ret[i] = make([]bool,n)
+	}
+	return ret
+}
+
+
+func findfree(board [][]byte,visited [][]bool,row,col int){
+	maxrow := len(board)
+	maxcol := len(board[0])
+	var q StackP
+	q.push(P{row,col})
+	visited[row][col] = true
+	for !q.empty(){
+		now := q.pop()
+		//up
+		if now.rn - 1 >= 0 && board[now.rn-1][now.cn] == 'O' && visited[now.rn-1][now.cn] == false{
+			up_p := P{now.rn-1,now.cn}
+			q.push(up_p)
+			visited[up_p.rn][up_p.cn] = true
+		}
+		//down
+		if now.rn + 1 < maxrow && board[now.rn+1][now.cn] == 'O' && visited[now.rn+1][now.cn] == false{
+			up_p := P{now.rn+1,now.cn}
+			q.push(up_p)
+			visited[up_p.rn][up_p.cn] = true
+		}
+		//left
+		if now.cn - 1 >= 0 && board[now.rn][now.cn-1] == 'O' && visited[now.rn][now.cn-1] == false{
+			up_p := P{now.rn,now.cn-1}
+			q.push(up_p)
+			visited[up_p.rn][up_p.cn] = true
+		}
+		//right
+		if now.cn + 1 < maxcol && board[now.rn][now.cn+1] == 'O' && visited[now.rn][now.cn+1] == false{
+			up_p := P{now.rn,now.cn+1}
+			q.push(up_p)
+			visited[up_p.rn][up_p.cn] = true
+		}
+	}
+}
+
+
+func solve(board [][]byte)  {
+	row := len(board)
+	if row <= 1{
+		return
+	}
+	col := len(board[0])
+	visited := mkboard(row,col)
+	//first row
+	for i:=0 ; i < col; i++{
+		if board[0][i] == 'O' && visited[0][i] == false{
+			findfree(board,visited,0,i)
+		}
+	}
+	//last row
+	for i:=0 ; i < col; i++{
+		if board[row-1][i] == 'O' && visited[row-1][i] == false{
+			findfree(board,visited,row-1,i)
+		}
+	}
+	//first col
+	for i:=0 ; i < row; i++{
+		if board[i][0] == 'O' && visited[i][0] == false{
+			findfree(board,visited,i,0)
+		}
+	}
+	//last col
+	for i:=0 ; i < row; i++{
+		if board[i][col-1] == 'O' && visited[i][col-1] == false{
+			findfree(board,visited,i,col-1)
+		}
+	}
+
+	for i:=0 ; i < row; i++{
+		for j:=0 ; j < col; j++{
+			if visited[i][j] == false{
+				board[i][j] = 'X'
+			}
+		}
+	}
+}
 
 func main() {
+	a := [][]byte{
+		[]byte{'X','X','X','X'},[]byte{'X','O','O','X'},[]byte{'X','X','O','X'},[]byte{'X','O','X','X'},
+	}
+	solve(a)
+	for i:=0 ; i < 4; i++{
+		for j:=0 ; j < 4; j++{
+			fmt.Printf("%c",a[i][j])
+		}
+		fmt.Println()
+	}
 	//fmt.Println(findLadders("hit","cog",[]string{"hot","dot","dog","lot","log","cog"}))
 	//fmt.Println(findLadders("red","tax",[]string{"ted","tex","red","tax","tad","den","rex","pee"}))
-	root := &TreeNode{Val:1}
-	root.Left = &TreeNode{Val:2}
-	root.Right = &TreeNode{Val:3}
-	fmt.Println(sumNumbers(root))
+	//root := &TreeNode{Val:1}
+	//root.Left = &TreeNode{Val:2}
+	//root.Right = &TreeNode{Val:3}
+	//fmt.Println(sumNumbers(root))
 	//fmt.Println(ladderLength("qa","sq",[]string{"si","go","se","cm","so","ph","mt","db","mb","sb","kr","ln","tm","le","av","sm","ar","ci","ca","br","ti","ba","to","ra","fa","yo","ow","sn","ya","cr","po","fe","ho","ma","re","or","rn","au","ur","rh","sr","tc","lt","lo","as","fr","nb","yb","if","pb","ge","th","pm","rb","sh","co","ga","li","ha","hz","no","bi","di","hi","qa","pi","os","uh","wm","an","me","mo","na","la","st","er","sc","ne","mn","mi","am","ex","pt","io","be","fm","ta","tb","ni","mr","pa","he","lr","sq","ye"}))
 	//fmt.Println(subsetsWithDup([]int{1,2,2}))
 	//fmt.Println(largestRectangleArea([]int{1,2,3,4,5,6,7,8,9}))
