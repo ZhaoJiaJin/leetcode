@@ -2364,17 +2364,38 @@ func solve(board [][]byte)  {
 	}
 }
 
+ func cancom(start int, gas, cost []int)(int,bool){
+     fmt.Println("start",start)
+     
+     left := 0
+     for i:=0; i < len(gas); i++{
+         pos := (start + i) % len(gas)
+         left += gas[pos]
+         fmt.Println("add gas to",left)
+         if cost[pos] > left{
+             return start + i,false
+         }
+         left -= cost[pos]
+         fmt.Println("left gas to",left)
+     }
+     return start,left >= 0
+ }
+
+
+ func canCompleteCircuit(gas []int, cost []int) int {
+     for start:=0; start < len(gas); start ++{
+         news,canc := cancom(start,gas,cost)
+         if canc{
+             return start
+         }
+         start = news
+         fmt.Println("new start",start)
+     }
+     return -1
+ }
+
 func main() {
-	a := [][]byte{
-		[]byte{'X','X','X','X'},[]byte{'X','O','O','X'},[]byte{'X','X','O','X'},[]byte{'X','O','X','X'},
-	}
-	solve(a)
-	for i:=0 ; i < 4; i++{
-		for j:=0 ; j < 4; j++{
-			fmt.Printf("%c",a[i][j])
-		}
-		fmt.Println()
-	}
+    fmt.Println(canCompleteCircuit([]int{2,4},[]int{3,4}))
 	//fmt.Println(findLadders("hit","cog",[]string{"hot","dot","dog","lot","log","cog"}))
 	//fmt.Println(findLadders("red","tax",[]string{"ted","tex","red","tax","tad","den","rex","pee"}))
 	//root := &TreeNode{Val:1}
@@ -2403,6 +2424,9 @@ func main() {
 }
 
 /*
+
+[]
+[]
 "nanny"
 "aloud"
 */
