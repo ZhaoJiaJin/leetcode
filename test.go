@@ -2394,8 +2394,49 @@ func solve(board [][]byte)  {
      return -1
  }
 
+
+
+func candy(ratings []int) int {
+	size := len(ratings)
+	candies := make([]int,size)
+	for i := 0; i < size ; i ++{
+		candies[i] = 1
+	}
+	for i := 1; i < size; i ++{
+		if ratings[i] > ratings[i-1]{
+			candies[i] = candies[i-1] + 1
+		}
+	}
+	sum := candies[size-1]
+	for i := size-2; i >= 0 ;i --{
+		if ratings[i] > ratings[i+1]{
+			candies[i] = max(candies[i], candies[i+1]+1)
+		}
+		sum += candies[i]
+	}
+	return sum
+}
+
+
+func singleNumber(nums []int) int {
+	sum := 0    
+	for _,v := range nums{
+		sum += v
+	}
+	nodupsum := nums[0]
+	for i:=1; i < len(nums); i ++{
+		if nums[i] == nums[i-1]{
+			continue
+		}
+		nodupsum += nums[i]
+	}
+	fmt.Println(sum,nodupsum)
+	return (nodupsum * 3 - sum)/2
+}
+
 func main() {
-    fmt.Println(canCompleteCircuit([]int{2,4},[]int{3,4}))
+	fmt.Println(singleNumber([]int{2,2,3,2}))
+    	//fmt.Println(canCompleteCircuit([]int{2,4},[]int{3,4}))
 	//fmt.Println(findLadders("hit","cog",[]string{"hot","dot","dog","lot","log","cog"}))
 	//fmt.Println(findLadders("red","tax",[]string{"ted","tex","red","tax","tad","den","rex","pee"}))
 	//root := &TreeNode{Val:1}
