@@ -2434,38 +2434,46 @@ func singleNumber(nums []int) int {
 	return (nodupsum * 3 - sum)/2
 }
 
+func isp(s string, l []string)bool{
+	for _,v := range l{
+		if v == s{
+			return true
+		}
+	}
+	return false
+}
+
+func wordBreak(s string, wordDict []string) bool {
+	size := len(s)
+	dp := make([]bool,size+1)
+	/*for i:=0 ;i < size; i ++{
+		dp[i] = make([]bool,size)
+	}*/
+	//dp[i] 0-i true/false
+	dp[0] = true
+	for i := 1 ; i <= size; i ++{
+		for j:=0; j <=i ; j ++{
+			if dp[j] && isp(s[j:i],wordDict){
+				dp[i] = true
+				break
+			}
+		}
+	
+	}
+	return dp[size]
+}
+
+
 func main() {
-	fmt.Println(singleNumber([]int{2,2,3,2}))
-    	//fmt.Println(canCompleteCircuit([]int{2,4},[]int{3,4}))
-	//fmt.Println(findLadders("hit","cog",[]string{"hot","dot","dog","lot","log","cog"}))
-	//fmt.Println(findLadders("red","tax",[]string{"ted","tex","red","tax","tad","den","rex","pee"}))
-	//root := &TreeNode{Val:1}
-	//root.Left = &TreeNode{Val:2}
-	//root.Right = &TreeNode{Val:3}
-	//fmt.Println(sumNumbers(root))
-	//fmt.Println(ladderLength("qa","sq",[]string{"si","go","se","cm","so","ph","mt","db","mb","sb","kr","ln","tm","le","av","sm","ar","ci","ca","br","ti","ba","to","ra","fa","yo","ow","sn","ya","cr","po","fe","ho","ma","re","or","rn","au","ur","rh","sr","tc","lt","lo","as","fr","nb","yb","if","pb","ge","th","pm","rb","sh","co","ga","li","ha","hz","no","bi","di","hi","qa","pi","os","uh","wm","an","me","mo","na","la","st","er","sc","ne","mn","mi","am","ex","pt","io","be","fm","ta","tb","ni","mr","pa","he","lr","sq","ye"}))
-	//fmt.Println(subsetsWithDup([]int{1,2,2}))
-	//fmt.Println(largestRectangleArea([]int{1,2,3,4,5,6,7,8,9}))
-	//fmt.Println(largestRectangleArea([]int{1,2,3}))
-	//[2,1,5,6,2,3]
-	//fmt.Println(titleToNumber("AB"))
-	//fmt.Println(combinationSum2([]int{10,1,2,7,6,1,5},8))
-	//fmt.Println(jump([]int{8,2,4,4,4,9,5,2,5,8,8,0,8,6,9,1,1,6,3,5,1,2,6,6,0,4,8,6,0,3,2,8,7,6,5,1,7,0,3,4,8,3,5,9,0,4,0,1,0,5,9,2,0,7,0,2,1,0,8,2,5,1,2,3,9,7,4,7,0,0,1,8,5,6,7,5,1,9,9,3,5,0,7,5}))
-	//fmt.Println(searchRange([]int{1},1))
-	//fmt.Println(canJump([]int{3,2,1,0,4}))
-	/*fmt.Println(merge([]Interval{
-		Interval{2,3},
-		Interval{5,6},
-		Interval{1,10},
-	}))*/
-	//fmt.Println(rotateRight(&ListNode{},1))
-	//fmt.Println(fullJustify([]string{"What","must","be","shall","be."},12))
-	//fmt.Println(uniquePathsWithObstacles([][]int{[]int{0,0},[]int{1,0}}))
-	//fmt.Println(minDistance("a","b"))
+	fmt.Println(wordBreak("leetcode",[]string{"leet","code"}))
 }
 
 /*
 
+""
+[]
+"abcd"
+["a","abc","b","cd"]
 []
 []
 "nanny"
