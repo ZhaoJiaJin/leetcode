@@ -2443,13 +2443,9 @@ func isp(s string, l []string)bool{
 	return false
 }
 
-func wordBreak(s string, wordDict []string) bool {
+/*func wordBreak(s string, wordDict []string) bool {
 	size := len(s)
 	dp := make([]bool,size+1)
-	/*for i:=0 ;i < size; i ++{
-		dp[i] = make([]bool,size)
-	}*/
-	//dp[i] 0-i true/false
 	dp[0] = true
 	for i := 1 ; i <= size; i ++{
 		for j:=0; j <=i ; j ++{
@@ -2458,24 +2454,53 @@ func wordBreak(s string, wordDict []string) bool {
 				break
 			}
 		}
+		fmt.Println(dp)
 	
 	}
 	return dp[size]
+}*/
+
+func wordBreak(s string, wordDict []string) []string {
+	m := make(map[string][]string)
+	return wbhlp(s,wordDict,m)
+}
+
+func wbhlp(s string, wordDict []string,m map[string][]string)[]string{
+	v,p := m[s]
+	if p{
+		fmt.Println(s)
+		return v
+	}
+	ret := make([]string,0)
+	if s == ""{
+		ret = append(ret,"")
+		return ret
+	}
+
+	for _,v := range wordDict{
+		if len(v) <= len(s) && v == s[:len(v)]{
+			sub := wbhlp(s[len(v):],wordDict,m)
+			for _,su := range sub{
+				t := ""
+				if su == ""{
+					t = v	
+				}else{
+					t = v + " " + su
+				}
+				ret = append(ret,t)
+			}
+		}
+	}
+	m[s] = ret
+	return ret
 }
 
 
 func main() {
-	fmt.Println(wordBreak("leetcode",[]string{"leet","code"}))
+	fmt.Println(wordBreak("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",[]string{"a","aa","aaa","aaaa","aaaaa","aaaaaa","aaaaaaa","aaaaaaaa","aaaaaaaaa","aaaaaaaaaa"}))
 }
 
 /*
-
 ""
 []
-"abcd"
-["a","abc","b","cd"]
-[]
-[]
-"nanny"
-"aloud"
 */
