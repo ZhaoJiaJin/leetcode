@@ -2570,10 +2570,53 @@ func printlink(node *ListNode){
 	fmt.Println()
 }
 
+func sortList(head *ListNode) *ListNode {
+	if head == nil || head.Next == nil {//|| head.Next.Next == nil{
+		return head
+	}
+	slow,fast := head,head
+	var pre *ListNode
+	for fast != nil && fast.Next != nil{
+		pre = slow
+		slow = slow.Next
+		fast = fast.Next.Next
+	}
+
+	pre.Next = nil
+
+	p1 := sortList(head)
+	p2 := sortList(slow)
+	return mergesort(p1,p2)
+}
+
+func mergesort(p1,p2 *ListNode)*ListNode{
+	dummy := ListNode{}
+	head := &dummy
+	
+	for p1 != nil && p2 != nil{
+		if p1.Val > p2.Val{
+			head.Next = p2
+			p2 = p2.Next
+		}else{
+			head.Next = p1
+			p1 = p1.Next
+		}
+		head = head.Next
+	}
+	if p1 != nil{
+		head.Next = p1
+	}
+	if p2 != nil{
+		head.Next = p2
+	}
+	return dummy.Next
+}
+
+
 func main() {
 	a := &ListNode{Val:2,Next:&ListNode{Val:1}}
 	node := &ListNode{Val:3,Next:a}
-	node = insertionSortList(node)
+	node = sortList(node)
 	printlink(node)
 }
 
