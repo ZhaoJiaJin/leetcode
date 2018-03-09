@@ -2612,6 +2612,40 @@ func mergesort(p1,p2 *ListNode)*ListNode{
 	return dummy.Next
 }
 
+type Point struct {
+    X int
+    Y int
+}
+
+func maxPoints(points []Point) int {
+	size := len(points)
+	if size <= 0{
+		return 0
+	}
+	xielv := make([][]Point,size)
+	for i:=0; i < size; i ++{
+		xielv[i] := make([]Point,size)
+	}
+	for i:=0; i < size; i ++{
+		for j:=0; j < i; j ++{
+			xielv[i][j] = Point{
+				X:points[i].X - points[j].X,
+				Y:points[i].Y - points[j].Y
+			}
+		}
+	}
+	max := 0
+	for i:=0; i < size; i ++{
+		for j:=0; j < i; j ++{
+			countpoint(i,j,xielv)
+		}
+	}
+	return max
+}
+
+func countpoint(p1,p2 int, xie [][]Point){
+
+}
 
 func main() {
 	a := &ListNode{Val:2,Next:&ListNode{Val:1}}
