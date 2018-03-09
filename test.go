@@ -2534,8 +2534,47 @@ func reorderList(head *ListNode)  {
 }
 
 
+func insertionSortList(head *ListNode) *ListNode {
+	dummy := &ListNode{}
+	dummy.Next = head
+	prei := dummy
+	for i:=dummy.Next; i != nil; {
+		prej := dummy
+		for j:=dummy.Next; j != i;  {
+				fmt.Println("i,j",prei.Val,"-->",i.Val,prej.Val,"-->",j.Val)
+				fmt.Printf("%s","before")
+				printlink(dummy.Next)
+			if j.Val > i.Val{
+				prei.Next = j
+				prej.Next = i
+				i.Next,j.Next = j.Next,i.Next
+				i,j = j,i
+			}
+				fmt.Printf("%s","after")
+				printlink(dummy.Next)
+			prej = j
+			j = j.Next
+		}
+		prei = i
+		i = i.Next
+	}
+
+	return dummy.Next
+}
+
+func printlink(node *ListNode){
+	for node != nil{
+		fmt.Printf("%d %s",node.Val,"--> ")
+		node = node.Next
+	}
+	fmt.Println()
+}
+
 func main() {
-	fmt.Println(wordBreak("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",[]string{"a","aa","aaa","aaaa","aaaaa","aaaaaa","aaaaaaa","aaaaaaaa","aaaaaaaaa","aaaaaaaaaa"}))
+	a := &ListNode{Val:2,Next:&ListNode{Val:1}}
+	node := &ListNode{Val:3,Next:a}
+	node = insertionSortList(node)
+	printlink(node)
 }
 
 /*
