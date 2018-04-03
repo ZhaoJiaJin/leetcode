@@ -2618,34 +2618,53 @@ type Point struct {
 }
 
 func maxPoints(points []Point) int {
-	size := len(points)
-	if size <= 0{
-		return 0
+	l := len(points)
+	if l <= 2{
+		return l
 	}
-	xielv := make([][]Point,size)
-	for i:=0; i < size; i ++{
-		xielv[i] := make([]Point,size)
-	}
-	for i:=0; i < size; i ++{
-		for j:=0; j < i; j ++{
-			xielv[i][j] = Point{
-				X:points[i].X - points[j].X,
-				Y:points[i].Y - points[j].Y
+	m := make(map[int]map[int]int)//x:{y:count}
+	ans := 0
+	for i := 0; i < l; i ++{
+		m = make(map[int]map[int]int)//x:{y:count}
+		overlap := 0
+		maxp := 0
+		for j := i+1; j < l; j ++{
+			pi := points[i]
+			pj := points[j]
+			x_det := pi.X - pj.X
+			y_det := pi.Y - pj.Y
+			if x_det == 0 && y_det == 0{
+				overlap ++
+				continue
 			}
+			gcd := getgcd(x_det,y_det)
+			x_det /= gcd
+			y_det /= gcd
+			_,xpresent := m[x_det]
+			if !xpresent{
+				m[x_det] = map[int]int{y_det:0}
+			}
+			_,ypresent := m[x_det][y_det]
+			if !ypresent{
+				m[x_det][y_det] = 0
+			}
+			m[x_det][y_det] ++
+			maxp = max(maxp,m[x_det][y_det])
 		}
+		ans = max(ans,maxp + overlap + 1)
 	}
-	max := 0
-	for i:=0; i < size; i ++{
-		for j:=0; j < i; j ++{
-			countpoint(i,j,xielv)
-		}
-	}
-	return max
+
+	return ans
 }
 
-func countpoint(p1,p2 int, xie [][]Point){
-
+func getgcd(a,b int)int{
+	if b == 0{
+		return a
+	}else{
+		return getgcd(b,a%b)
+	}
 }
+
 
 func main() {
 	a := &ListNode{Val:2,Next:&ListNode{Val:1}}
