@@ -400,14 +400,6 @@ func rightMax(n []int, pos int) int {
 	return max
 }
 
-func min(a, b int) int {
-	if a < b {
-		return a
-	} else {
-		return b
-	}
-}
-
 /*func trap(height []int) int {
 	full := 0
 	for i:=0;i<len(height); i++{
@@ -422,14 +414,6 @@ func min(a, b int) int {
 
 	return full
 }*/
-
-func max(a, b int) int {
-	if a > b {
-		return a
-	} else {
-		return b
-	}
-}
 
 func trap(height []int) int {
 	size := len(height)
@@ -2666,14 +2650,80 @@ func getgcd(a,b int)int{
 }
 
 
+
+func maxProduct(nums []int) int {
+	r := nums[0]
+	maxv,minv := r,r
+	for i := 1; i < len(nums); i ++{
+		if nums[i] < 0{
+			maxv,minv = minv,maxv
+		}
+		maxv = max(nums[i],maxv * nums[i])
+		minv = min(nums[i],minv * nums[i])
+		r = max(r,maxv)
+	}
+	return r
+}
+
+
+func findMin(nums []int) int {
+	start,end := 0,len(nums)-1   
+	for start < end{
+		if nums[start] < nums[end]{
+			return nums[start]
+		}
+		mid := (start+end)/2
+		if nums[mid] > nums[start]{
+			start = mid+1
+		}else if nums[mid] < nums[start]{
+			end = mid
+		}else{
+			start ++
+		}
+		fmt.Println(start,end)
+	}
+	return nums[start]
+}
+
+
+func findPeakElement(nums []int) int {
+	return fphelper(nums,0,len(nums)-1)
+}
+
+func fphelper(nums []int,begin,end int)int{
+	if begin == end{
+		return begin
+	}
+	mid := (begin + end) / 2
+	mid_after := mid+1
+	if nums[mid] > nums[mid_after]{
+		return fphelper(nums,begin,mid)
+	}else{
+		return fphelper(nums,mid_after,end)
+	}
+}
+
 func main() {
-	a := &ListNode{Val:2,Next:&ListNode{Val:1}}
-	node := &ListNode{Val:3,Next:a}
-	node = sortList(node)
-	printlink(node)
+	fmt.Println(findPeakElement([]int{1, 2, 3, 1}))
 }
 
 /*
-""
-[]
 */
+
+func max(a, b int) int {
+	if a > b {
+		return a
+	} else {
+		return b
+	}
+}
+
+func min(a, b int) int {
+	if a < b {
+		return a
+	} else {
+		return b
+	}
+}
+
+
