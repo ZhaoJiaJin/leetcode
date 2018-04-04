@@ -2703,8 +2703,82 @@ func fphelper(nums []int,begin,end int)int{
 	}
 }
 
+func maximumGap(nums []int) int {
+	l := len(nums)
+	if l < 2{
+		return 0
+	}
+	return 0
+}
+
+func compareVersion(version1 string, version2 string) int {
+	if version1 == version2{
+		return 0
+	}
+	sp1 := strings.SplitN(version1,".",2)
+	sp2 := strings.SplitN(version2,".",2)
+
+	var p1,p2 int
+	if len(sp1) == 0{
+		p1 = 0
+	}else{
+		p1,_ = strconv.Atoi(sp1[0])
+	}
+	if len(sp2) == 0{
+		p2 = 0
+	}else{
+		p2,_ = strconv.Atoi(sp2[0])
+	}
+	if p1 > p2{
+		return 1
+	}else if p1 < p2{
+		return -1
+	}else{
+		sp1 = append(sp1,"","")
+		sp2 = append(sp2,"","")
+		return compareVersion(sp1[1],sp2[1])
+	}
+
+
+}
+
+func fractionToDecimal(numerator int, denominator int) string {
+	appear := make(map[int]int) //value:pos
+	ans := ""
+	a,b := numerator,denominator
+	first := true
+	for{
+		fmt.Println(appear,a,b)
+		if a == 0{
+			return ans
+		}
+		_,present := appear[a]
+		if present{
+			//repeat
+			return ans[:appear[a]] + "(" + ans[appear[a]:] + ")"
+		}
+
+		if a < b{
+			ans += "0"
+			if first{
+				ans += "."
+				first = false
+			}
+			appear[a] = len(ans)
+			a *= 10
+		}else{
+			tmp := a/b
+			appear[a] = len(ans)
+			ans += strconv.Itoa(tmp)
+			a %= b
+			a *= 10
+		}
+	}
+	return ans
+}
+
 func main() {
-	fmt.Println(findPeakElement([]int{1, 2, 3, 1}))
+	fmt.Println(fractionToDecimal(1,99))
 }
 
 /*
