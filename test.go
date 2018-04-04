@@ -2746,9 +2746,27 @@ func fractionToDecimal(numerator int, denominator int) string {
 	appear := make(map[int]int) //value:pos
 	ans := ""
 	a,b := numerator,denominator
+	flag := 1
+	if a < 0{
+		a *= -1
+		flag *= -1
+	}
+	if b < 0{
+		b *= -1
+		flag *= -1
+	}
 	first := true
+	if flag == -1{
+		ans += "-"
+	}
 	for{
-		fmt.Println(appear,a,b)
+		fmt.Println(appear,a,b,ans)
+		if a == 0{
+			if ans == "-" || ans == ""{
+				return "0"
+			}
+			return ans
+		}
 		if a == 0{
 			return ans
 		}
@@ -2757,28 +2775,35 @@ func fractionToDecimal(numerator int, denominator int) string {
 			//repeat
 			return ans[:appear[a]] + "(" + ans[appear[a]:] + ")"
 		}
-
-		if a < b{
+		appear[a] = len(ans) 
+		for a < b{
 			ans += "0"
 			if first{
 				ans += "."
 				first = false
 			}
-			appear[a] = len(ans)
 			a *= 10
-		}else{
-			tmp := a/b
-			appear[a] = len(ans)
-			ans += strconv.Itoa(tmp)
-			a %= b
-			a *= 10
+			appear[a] = len(ans) 
 		}
+		appear[a] = len(ans) 
+		tmp := a/b
+		ans += strconv.Itoa(tmp)
+		a %= b
+		if a < b && a != 0{
+			if first{
+				ans += "."
+				first = false
+			}
+		}
+
+		a *= 10
+		
 	}
 	return ans
 }
 
 func main() {
-	fmt.Println(fractionToDecimal(1,99))
+	fmt.Println(fractionToDecimal(-10,1))
 }
 
 /*
