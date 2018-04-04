@@ -2830,9 +2830,62 @@ func calculateMinimumHP(dungeon [][]int) int {
 	return dp[0][0]
 }
 
+func lnhelper(a,b int)bool{
+	as := strconv.Itoa(a)
+	bs := strconv.Itoa(b)
+	return as+bs < bs+as
+}
+
+
+func largestNumber(nums []int) string {
+	for i := 0 ; i < len(nums); i ++{
+		for j := i+1; j < len(nums); j ++{
+			if lnhelper(nums[i],nums[j]){
+				nums[i],nums[j] = nums[j],nums[i]
+			}
+		}
+	} 
+	ans := ""
+	for _,v := range nums{
+		ans += strconv.Itoa(v)
+	}
+	for len(ans) > 1  && ans[0] == '0'{
+		ans = ans[1:]
+	}
+	return ans
+}
+
+func findRepeatedDnaSequences(s string) []string {
+	repeat := make([]string,0)    
+	m := make(map[string]int)
+	for i := 0; i+10 <= len(s); i ++{
+		w := s[i:i+10]
+		_,present := m[w]
+		if !present{
+			m[w] = 0 
+		}
+		m[w] ++
+		if m[w] > 1{
+			has := false
+			for _,v := range repeat{
+				if v == w{
+					has = true
+				}
+			}
+			if !has {
+				repeat = append(repeat,w)
+			}
+		}
+	}
+	return repeat
+}
+
+func maxProfit(k int, prices []int) int {
+	    
+}
 
 func main() {
-	fmt.Println(calculateMinimumHP([][]int{[]int{0}}))
+	fmt.Println(findRepeatedDnaSequences("AAAAACCCCCAAAAACCCCCCAAAAAGGGTTT"))
 }
 
 /*
