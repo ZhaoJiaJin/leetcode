@@ -2802,8 +2802,37 @@ func fractionToDecimal(numerator int, denominator int) string {
 	return ans
 }
 
+func calculateMinimumHP(dungeon [][]int) int {
+	height := len(dungeon)
+	width := len(dungeon[0])
+	dp := make([][]int,height+1)
+	for i:=0; i <= height; i ++{
+		dp[i] = make([]int,width+1)
+		for j:=0; j <= width; j ++{
+			dp[i][j] = math.MaxInt32
+		}
+	}
+
+	dp[height][width-1] = 1
+	dp[height-1][width] = 1
+
+	for i := height-1; i >=0 ; i-- {
+		for j := width-1; j >= 0; j -- {
+			m := min(dp[i+1][j],dp[i][j+1]) - dungeon[i][j]
+			if m <= 0{
+				dp[i][j] = 1
+			}else{
+				dp[i][j] = m
+			}
+		}
+	}
+
+	return dp[0][0]
+}
+
+
 func main() {
-	fmt.Println(fractionToDecimal(-10,1))
+	fmt.Println(calculateMinimumHP([][]int{[]int{0}}))
 }
 
 /*
